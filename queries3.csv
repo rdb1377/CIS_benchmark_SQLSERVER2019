@@ -1,0 +1,7 @@
+﻿indexDscQueryval1val2
+1.1Ensure Latest SQL Server Service Packs and Hotfixes are Installed 0000
+1.2Ensure Single-Function Member Servers are Used 0000
+2.1Ensure 'Ad Hoc Distributed Queries' Server Configuration Option is set to '0' (Scored)SELECT name, CAST(value as int) as value_configured, CAST(value_in_use as int) as value_in_use FROM sys.configurations WHERE name = 'Ad Hoc Distributed Queries';00
+2.2Ensure 'CLR Enabled' Server Configuration Option is set to '0' (Scored)SELECT name, CAST(value as int) as value_configured, CAST(value_in_use as int) as value_in_use FROM sys.configurations WHERE name = 'clr enabled';00
+2.3Ensure 'Cross DB Ownership Chaining' Server Configuration Option is set to '0'SELECT name, CAST(value as int) as value_configured, CAST(value_in_use as int) as value_in_use FROM sys.configurations WHERE name = 'cross db ownership chaining';00
+2.4Ensure 'Database Mail XPs' Server Configuration Option is set to '0' (Automated)SELECT name, CAST(value as int) as value_configured,CAST(value_in_use as int) as value_in_use FROM sys.configurations WHERE name = 'Database Mail XPs';00
