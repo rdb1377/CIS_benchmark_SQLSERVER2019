@@ -38,6 +38,7 @@ class AdminControls:
         self.tableOutputFrame()
 
 
+
     """Instructor Info Entries Frame"""
 
 
@@ -61,7 +62,7 @@ class AdminControls:
         self.txtName.grid(row=1, column=1, padx=10, pady=5, sticky="w")
 
         # Instructor Gender
-        self.LabelDatabase = Label(self.entriesFrame, text="Gender", font=("Times New Roman", 16, "bold"), bg="#5856a0", fg="white")
+        self.LabelDatabase = Label(self.entriesFrame, text="database", font=("Times New Roman", 16, "bold"), bg="#5856a0", fg="white")
         self.LabelDatabase.grid(row=1, column=2, padx=10, pady=5, sticky="w")
 
 
@@ -71,48 +72,48 @@ class AdminControls:
         self.databases_combo.grid(row=1, column=3, padx=10, pady=5, sticky="w")
 
         # Instructor Dance Style
-        self.labelStyles = Label(self.entriesFrame, text="Dance Style", font=("Times New Roman", 16, "bold"), bg="#5856a0",fg="white")
-        self.labelStyles.grid(row=2, column=0, padx=10, pady=5, sticky="w")
-        self.comboStyle = ttk.Combobox(self.entriesFrame, textvariable=self.danceStyles, font=("Times New Roman", 15), width=28, state="readonly")
-        self.comboStyle['values'] = db.danceStylesValues()
-        self.comboStyle.grid(row=2, column=1, padx=10, pady=5, sticky="w")
+        # self.labelStyles = Label(self.entriesFrame, text="Dance Style", font=("Times New Roman", 16, "bold"), bg="#5856a0",fg="white")
+        # self.labelStyles.grid(row=2, column=0, padx=10, pady=5, sticky="w")
+        # self.comboStyle = ttk.Combobox(self.entriesFrame, textvariable=self.danceStyles, font=("Times New Roman", 15), width=28, state="readonly")
+        # self.comboStyle['values'] = db.danceStylesValues()
+        # self.comboStyle.grid(row=2, column=1, padx=10, pady=5, sticky="w")
 
         # Instructor Tel No
-        self.labelTelNo = Label(self.entriesFrame, text="Contact Number", font=("Times New Roman", 16, "bold"),bg="#5856a0",fg="white")
-        self.labelTelNo.grid(row=2, column=2, padx=10, pady=5, sticky="w")
-        self.txtTelNo = Entry(self.entriesFrame, textvariable=self.insTelNo, font=("Times New Roman", 15), width=30)
-        self.txtTelNo.grid(row=2, column=3, padx=10, pady=5, sticky="w")
+        # self.labelTelNo = Label(self.entriesFrame, text="Contact Number", font=("Times New Roman", 16, "bold"),bg="#5856a0",fg="white")
+        # self.labelTelNo.grid(row=2, column=2, padx=10, pady=5, sticky="w")
+        # self.txtTelNo = Entry(self.entriesFrame, textvariable=self.insTelNo, font=("Times New Roman", 15), width=30)
+        # self.txtTelNo.grid(row=2, column=3, padx=10, pady=5, sticky="w")
 
         # Instructor Hourly Rate
-        self.labelhrRate = Label(self.entriesFrame, text="Hourly Rate", font=("Times New Roman", 16, "bold"),bg="#5856a0", fg="white")
-        self.labelhrRate.grid(row=3, column=0, padx=10, pady=5, sticky="w")
-        self.txthrRate = Entry(self.entriesFrame, textvariable=self.hrRate, font=("Times New Roman", 15), width=30)
-        self.txthrRate.grid(row=3, column=1, padx=10, pady=5, sticky="w")
+        # self.labelhrRate = Label(self.entriesFrame, text="Hourly Rate", font=("Times New Roman", 16, "bold"),bg="#5856a0", fg="white")
+        # self.labelhrRate.grid(row=3, column=0, padx=10, pady=5, sticky="w")
+        # self.txthrRate = Entry(self.entriesFrame, textvariable=self.hrRate, font=("Times New Roman", 15), width=30)
+        # self.txthrRate.grid(row=3, column=1, padx=10, pady=5, sticky="w")
 
         # Instructor Availability
-        self.labelAvail = Label(self.entriesFrame, text="Availability", font=("Times New Roman", 16, "bold"), bg="#5856a0",fg="white")
-        self.labelAvail.grid(row=3, column=2, padx=10, pady=5, sticky="w")
-        self.comboAvail = ttk.Combobox(self.entriesFrame, textvariable=self.avail, font=("Times New Roman", 15), width=28,state="readonly")
-        self.comboAvail['values'] = ("AVAILABLE", "NOT AVAILABLE")
-        self.comboAvail.grid(row=3, column=3, padx=10, pady=5, sticky="w")
+        # self.labelAvail = Label(self.entriesFrame, text="Availability", font=("Times New Roman", 16, "bold"), bg="#5856a0",fg="white")
+        # self.labelAvail.grid(row=3, column=2, padx=10, pady=5, sticky="w")
+        # self.comboAvail = ttk.Combobox(self.entriesFrame, textvariable=self.avail, font=("Times New Roman", 15), width=28,state="readonly")
+        # self.comboAvail['values'] = ("AVAILABLE", "NOT AVAILABLE")
+        # self.comboAvail.grid(row=3, column=3, padx=10, pady=5, sticky="w")
 
         # Instructor Working Days
-        self.labelListDays = Label(self.entriesFrame, text="Choose Available Days",font=("Times New Roman", 16, "bold"), bg="#5856a0",fg="white")
+        self.labelListDays = Label(self.entriesFrame, text="description",font=("Times New Roman", 16, "bold"), bg="#5856a0",fg="white")
         self.labelListDays.grid(row=4, column=2, padx=10, pady=5, sticky="w")
         self.listDays = Listbox(self.entriesFrame, selectmode=MULTIPLE, font=("Times New Roman", 10), width=50,height=7)
         self.listDays.grid(row=4, column=3, columnspan=3, rowspan=6, padx=10, pady=5, sticky="w")
 
         # Instructor Username
-        self.labelUsername = Label(self.entriesFrame, text="Username", font=("Times New Roman", 16, "bold"),bg="#5856a0",fg="white")
-        self.labelUsername.grid(row=4, column=0, padx=10, pady=5, sticky="w")
-        self.txtUsername = Entry(self.entriesFrame, textvariable=self.uName, font=("Times New Roman", 15), width=30,bg="#D3D3E7")
-        self.txtUsername.grid(row=4, column=1, padx=10, pady=5, sticky="w")
+        # self.labelUsername = Label(self.entriesFrame, text="Username", font=("Times New Roman", 16, "bold"),bg="#5856a0",fg="white")
+        # self.labelUsername.grid(row=4, column=0, padx=10, pady=5, sticky="w")
+        # self.txtUsername = Entry(self.entriesFrame, textvariable=self.uName, font=("Times New Roman", 15), width=30,bg="#D3D3E7")
+        # self.txtUsername.grid(row=4, column=1, padx=10, pady=5, sticky="w")
 
         # Instructor Password
-        self.labelPassword = Label(self.entriesFrame, text="Password", font=("Times New Roman", 16, "bold"), bg="#5856a0",fg="white")
-        self.labelPassword.grid(row=5, column=0, padx=10, pady=5, sticky="w")
-        self.txtPassword = Entry(self.entriesFrame, textvariable=self.pw, font=("Times New Roman", 15), width=30,bg="#D3D3E7")
-        self.txtPassword.grid(row=5, column=1, padx=10, pady=5, sticky="w")
+        # self.labelPassword = Label(self.entriesFrame, text="Password", font=("Times New Roman", 16, "bold"), bg="#5856a0",fg="white")
+        # self.labelPassword.grid(row=5, column=0, padx=10, pady=5, sticky="w")
+        # self.txtPassword = Entry(self.entriesFrame, textvariable=self.pw, font=("Times New Roman", 15), width=30,bg="#D3D3E7")
+        # self.txtPassword.grid(row=5, column=1, padx=10, pady=5, sticky="w")
 
     """Sub Methods to be used in primary CTA methods"""
 
@@ -201,7 +202,9 @@ class AdminControls:
     def viewInstructor(self):
         self.out.delete(*self.out.get_children())  # emptying the table before reloading
         for row in self.benchmark.view():
-            self.out.insert("", END, values=row)
+            self.out.insert("", END, values=row , tags= (row[-1]))
+            self.out.tag_configure('True', background='green')
+            self.out.tag_configure('False', background='red')
 
     # Method to direct to the next Frame to Assign Instructors
     def manageSessions(self):
@@ -297,31 +300,27 @@ class AdminControls:
 
         # Formatting the output table view
         self.out = ttk.Treeview(self.tableFrame, yscrollcommand=self.yScroll.set,
-                                columns=(1, 2, 3, 4, 5, 6, 7, 8, 9, 10), style="mystyle.Treeview")
+                                columns=(1, 2, 3, 4, 5, 6, 7), style="mystyle.Treeview")
         self.out.heading("1", text="Index")
         self.out.column("1", width=10)
         self.out.heading("2", text="Name")
         self.out.column("2", width=30)
-        self.out.heading("3", text="Gender")
+        self.out.heading("3", text="state")
         self.out.column("3", width=5)
-        self.out.heading("4", text="Dance Styles")
+        self.out.heading("4", text="pass")
         self.out.column("4", width=8)
-        self.out.heading("5", text="Tel Number")
+        self.out.heading("5", text="  ")
         self.out.column("5", width=10)
-        self.out.heading("6", text="Hourly Rate")
+        self.out.heading("6", text="   ")
         self.out.column("6", width=6)
-        self.out.heading("7", text="Availability")
+        self.out.heading("7", text=" ")
         self.out.column("7", width=5)
-        self.out.heading("8", text="Available Days")
-        self.out.heading("9", text="Username")
-        self.out.column("9", width=3)
-        self.out.heading("10", text="Password")
-        self.out.column("10", width=3)
+
         self.out['show'] = 'headings'
 
         # Virtual Events to trigger methods
         self.out.bind("<ButtonRelease-1>", self.getData)
-        self.comboAvail.bind("<<ComboboxSelected>>", self.selectDays)
+        # self.comboAvail.bind("<<ComboboxSelected>>", self.selectDays)
 
         # TreeView output layout configurations
         self.out.pack(fill=X)
