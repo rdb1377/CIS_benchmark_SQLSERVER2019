@@ -66,19 +66,16 @@ class Benchmarks:
                 if (row[2] != ""):
                     cur.execute(row[2])
                     QueryResult = cur.fetchall()
-
+                    flag = 'True'
                     for index in range(3,len(row)):
-                       if(int(row[index]) == QueryResult[0][index-2]):
+                        if(int(row[index]) == QueryResult[0][index-2]):
                            print("biobio")
+                        else:
+                            flag = 'False'
 
 
                     print("expected:", int(row[3]) == QueryResult[0][1], "result:", QueryResult[0][1])
-                    rows.append(tuple(QueryResult[0]))
+                    rows.append((tuple(QueryResult[0]), flag))
 
         print(rows)
-
-        # cur = self.cnxn.cursor()
-        # cur.execute("SELECT * FROM sys.servers")
-        # rows = cur.fetchall()
-        # print(rows)
         return rows
