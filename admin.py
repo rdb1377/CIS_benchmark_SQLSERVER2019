@@ -1,3 +1,4 @@
+import tkinter
 from tkinter import *
 from tkinter import ttk
 from database import Database
@@ -5,6 +6,10 @@ from tkinter import messagebox
 import login
 import sessions
 from bench import Benchmarks
+import tkinter.scrolledtext as st
+from tkhtmlview import HTMLScrolledText
+
+
 import pyodbc
 
 # creating a database object
@@ -38,9 +43,7 @@ class AdminControls:
         self.tableOutputFrame()
 
 
-
     """Instructor Info Entries Frame"""
-
 
 
     def handle_sql_variant_as_string(value):
@@ -50,19 +53,21 @@ class AdminControls:
         # Admin Control Frame Configurations
         res = self.benchmark.get_databases()
 
-        self.entriesFrame = Frame(self.root, bg="#5856a0")
+        self.entriesFrame = Frame(self.root, bg="#110a4d")
         self.entriesFrame.pack(side=TOP, fill=X)
-        self.admin_frame_title = Label(self.entriesFrame, text="welcome", font=("Goudy old style", 35), bg="#5856a0",fg="white")
+        self.admin_frame_title = Label(self.entriesFrame, text="welcome", font=("Goudy old style", 35), bg="#110a4d",fg="white")
         self.admin_frame_title.grid(row=0, columnspan=2, padx=10, pady=20, sticky="w")
 
         # Instructor Name
-        self.labelName = Label(self.entriesFrame, text="Name", font=("Times New Roman", 16, "bold"), bg="#5856a0",fg="white")
+        self.labelName = Label(self.entriesFrame, text="Name", font=("Times New Roman", 16, "bold"), bg="#110a4d",fg="white")
         self.labelName.grid(row=1, column=0, padx=10, pady=5, sticky="w")
-        self.txtName = Entry(self.entriesFrame, textvariable=self.insName, font=("Times New Roman", 15), width=30)
-        self.txtName.grid(row=1, column=1, padx=10, pady=5, sticky="w")
+        #self.txtName = st.ScrolledText(self.entriesFrame,  font=("Times New Roman", 16), width=40 , height=7 , relief=GROOVE , wrap= tkinter.WORD)
+        self.txtName = HTMLScrolledText(self.entriesFrame  , html= '<html>hiiiiiiii</html>' , height= 15)
+        #self.txtName.place(x=40, y=100, width=180, height=60)
+        self.txtName.grid(row=1, column=1, padx=10, pady=5 ,sticky=W + N + S + E)
 
         # Instructor Gender
-        self.LabelDatabase = Label(self.entriesFrame, text="database", font=("Times New Roman", 16, "bold"), bg="#5856a0", fg="white")
+        self.LabelDatabase = Label(self.entriesFrame, text="database", font=("Times New Roman", 16, "bold"), bg="#110a4d", fg="white")
         self.LabelDatabase.grid(row=1, column=2, padx=10, pady=5, sticky="w")
 
 
@@ -71,49 +76,21 @@ class AdminControls:
         self.databases_combo.bind("<<ComboboxSelected>>",lambda event, entry=self.databases_combo: self.benchmark.buildCNXN(entry.get()))
         self.databases_combo.grid(row=1, column=3, padx=10, pady=5, sticky="w")
 
-        # Instructor Dance Style
-        # self.labelStyles = Label(self.entriesFrame, text="Dance Style", font=("Times New Roman", 16, "bold"), bg="#5856a0",fg="white")
-        # self.labelStyles.grid(row=2, column=0, padx=10, pady=5, sticky="w")
-        # self.comboStyle = ttk.Combobox(self.entriesFrame, textvariable=self.danceStyles, font=("Times New Roman", 15), width=28, state="readonly")
-        # self.comboStyle['values'] = db.danceStylesValues()
-        # self.comboStyle.grid(row=2, column=1, padx=10, pady=5, sticky="w")
-
-        # Instructor Tel No
-        # self.labelTelNo = Label(self.entriesFrame, text="Contact Number", font=("Times New Roman", 16, "bold"),bg="#5856a0",fg="white")
-        # self.labelTelNo.grid(row=2, column=2, padx=10, pady=5, sticky="w")
-        # self.txtTelNo = Entry(self.entriesFrame, textvariable=self.insTelNo, font=("Times New Roman", 15), width=30)
-        # self.txtTelNo.grid(row=2, column=3, padx=10, pady=5, sticky="w")
-
-        # Instructor Hourly Rate
-        # self.labelhrRate = Label(self.entriesFrame, text="Hourly Rate", font=("Times New Roman", 16, "bold"),bg="#5856a0", fg="white")
-        # self.labelhrRate.grid(row=3, column=0, padx=10, pady=5, sticky="w")
-        # self.txthrRate = Entry(self.entriesFrame, textvariable=self.hrRate, font=("Times New Roman", 15), width=30)
-        # self.txthrRate.grid(row=3, column=1, padx=10, pady=5, sticky="w")
-
-        # Instructor Availability
-        # self.labelAvail = Label(self.entriesFrame, text="Availability", font=("Times New Roman", 16, "bold"), bg="#5856a0",fg="white")
+        #
+        # # Instructor Availability
+        # self.labelAvail = Label(self.entriesFrame, text="Availability", font=("Times New Roman", 16, "bold"), bg="#110a4d",fg="white")
         # self.labelAvail.grid(row=3, column=2, padx=10, pady=5, sticky="w")
         # self.comboAvail = ttk.Combobox(self.entriesFrame, textvariable=self.avail, font=("Times New Roman", 15), width=28,state="readonly")
         # self.comboAvail['values'] = ("AVAILABLE", "NOT AVAILABLE")
         # self.comboAvail.grid(row=3, column=3, padx=10, pady=5, sticky="w")
+        #
+        # # Instructor Working Days
+        # self.labelListDays = Label(self.entriesFrame, text="Choose Available Days",font=("Times New Roman", 16, "bold"), bg="#110a4d",fg="white")
+        # self.labelListDays.grid(row=4, column=2, padx=10, pady=5, sticky="w")
+        # self.listDays = Listbox(self.entriesFrame, selectmode=MULTIPLE, font=("Times New Roman", 10), width=50,height=7)
+        # self.listDays.grid(row=4, column=3, columnspan=3, rowspan=6, padx=10, pady=5, sticky="w")
 
-        # Instructor Working Days
-        self.labelListDays = Label(self.entriesFrame, text="description",font=("Times New Roman", 16, "bold"), bg="#5856a0",fg="white")
-        self.labelListDays.grid(row=4, column=2, padx=10, pady=5, sticky="w")
-        self.listDays = Listbox(self.entriesFrame, selectmode=MULTIPLE, font=("Times New Roman", 10), width=50,height=7)
-        self.listDays.grid(row=4, column=3, columnspan=3, rowspan=6, padx=10, pady=5, sticky="w")
 
-        # Instructor Username
-        # self.labelUsername = Label(self.entriesFrame, text="Username", font=("Times New Roman", 16, "bold"),bg="#5856a0",fg="white")
-        # self.labelUsername.grid(row=4, column=0, padx=10, pady=5, sticky="w")
-        # self.txtUsername = Entry(self.entriesFrame, textvariable=self.uName, font=("Times New Roman", 15), width=30,bg="#D3D3E7")
-        # self.txtUsername.grid(row=4, column=1, padx=10, pady=5, sticky="w")
-
-        # Instructor Password
-        # self.labelPassword = Label(self.entriesFrame, text="Password", font=("Times New Roman", 16, "bold"), bg="#5856a0",fg="white")
-        # self.labelPassword.grid(row=5, column=0, padx=10, pady=5, sticky="w")
-        # self.txtPassword = Entry(self.entriesFrame, textvariable=self.pw, font=("Times New Roman", 15), width=30,bg="#D3D3E7")
-        # self.txtPassword.grid(row=5, column=1, padx=10, pady=5, sticky="w")
 
     """Sub Methods to be used in primary CTA methods"""
 
@@ -123,7 +100,9 @@ class AdminControls:
             self.selectedRow = self.out.focus()
             self.selectedData = self.out.item(self.selectedRow)
             self.chosenRow = self.selectedData["values"]
-            self.insName.set(self.chosenRow[1])
+            self.insName.set(self.chosenRow[2])
+            self.txtName.delete('1.0', END)
+            self.txtName.set_html(self.chosenRow[2])
             self.insGender.set(self.chosenRow[2])
             self.danceStyles.set(self.chosenRow[3])
             self.insTelNo.set(self.chosenRow[4])
@@ -155,7 +134,6 @@ class AdminControls:
 
     """CTA Methods"""
 
-    # Method to create a new Instructor
     def addInstructor(self):
         if self.txtName.get() == "" or self.txtTelNo.get() == "" or self.comboAvail.get() == "" or self.comboStyle.get() == "" or self.txthrRate.get() == "" or self.comboGender.get() == "" or self.txtUsername.get() == "" or self.txtPassword.get() == "":
             messagebox.showerror("Error!", "Please fill all the fields!")
@@ -170,7 +148,6 @@ class AdminControls:
         self.resetForm()
         self.viewInstructor()
 
-    # Method to update selected Instructor details
     def assignInstructor(self):
         if self.txtName.get() == "" or self.txtTelNo.get() == "" or self.comboAvail.get() == "" or self.comboStyle.get() == "" or self.txthrRate.get() == "" or self.comboGender.get() == "" or self.txtUsername.get() == "" or self.txtPassword.get() == "":
             messagebox.showerror("Error!", "Choose an Instructor to Update Details!")
@@ -193,6 +170,7 @@ class AdminControls:
     def dltInstructor(self):
         try:
             db.removeInstructor(self.chosenRow[0])
+
             self.resetForm()
             self.viewInstructor()
         except AttributeError as error:
@@ -202,16 +180,14 @@ class AdminControls:
     def viewInstructor(self):
         self.out.delete(*self.out.get_children())  # emptying the table before reloading
         for row in self.benchmark.view():
-            self.out.insert("", END, values=row , tags= (row[-1]))
-            self.out.tag_configure('True', background='green')
-            self.out.tag_configure('False', background='red')
+            self.out.insert("", END, values=row)
 
     # Method to direct to the next Frame to Assign Instructors
     def manageSessions(self):
         self.entriesFrame.destroy()
         self.buttonsFrame.destroy()
         self.tableFrame.destroy()
-        sessions.AssignSession(self.root)
+        sessions.AssignSession(self.root , self.cnxn)
 
     # Method to reset all input widgets in the frame
     def resetForm(self):
@@ -236,55 +212,60 @@ class AdminControls:
 
     def adminFrameButtons(self):
         # Button Frame Configurations
-        self.buttonsFrame = Frame(self.entriesFrame, bg="#5856a0")
+        self.buttonsFrame = Frame(self.entriesFrame, bg="#110a4d")
         self.buttonsFrame.grid(row=10, column=0, padx=10, pady=10, sticky="w", columnspan=8)
 
         # Add a new Record
         self.btnAdd = Button(self.buttonsFrame, command=self.addInstructor, text="Add Instructor", bd=0, cursor="hand2",
                              bg="#EADDF7",
-                             fg="#5856a0", width=20, font=("Impact", 15))
+                             fg="#110a4d", width=20, font=("Impact", 15))
         self.btnAdd.grid(row=0, column=0, padx=10)
 
         # Update Selected Record
         self.btnUpdate = Button(self.buttonsFrame, command=self.assignInstructor, text="Update Instructor", bd=0,
                                 cursor="hand2",
                                 bg="#EADDF7",
-                                fg="#5856a0", width=20, font=("Impact", 15))
+                                fg="#110a4d", width=20, font=("Impact", 15))
         self.btnUpdate.grid(row=0, column=1, padx=10)
 
         # Delete Selected Record
         self.btnDlt = Button(self.buttonsFrame, command=self.dltInstructor, text="Remove Instructor", bd=0,
                              cursor="hand2",
                              bg="#EADDF7",
-                             fg="#5856a0", width=20, font=("Impact", 15))
+                             fg="#110a4d", width=20, font=("Impact", 15))
         self.btnDlt.grid(row=0, column=2, padx=10)
 
         # Reset Widget Inputs
         self.btnReset = Button(self.buttonsFrame, command=self.resetForm, text="Reset Form", bd=0, cursor="hand2",
-                               bg="#EADDF7", fg="#5856a0", width=20, font=("Impact", 15))
+                               bg="#EADDF7", fg="#110a4d", width=20, font=("Impact", 15))
         self.btnReset.grid(row=0, column=3, padx=10)
 
         # Display List
         self.btnView = Button(self.buttonsFrame, command=self.viewInstructor, text="View Instructor List", bd=0,
                               cursor="hand2",
                               bg="#EADDF7",
-                              fg="#5856a0", width=20, font=("Impact", 15))
+                              fg="#110a4d", width=20, font=("Impact", 15))
         self.btnView.grid(row=0, column=4, padx=10)
 
         # Manage Sessions
         self.btnManageSess = Button(self.buttonsFrame, command=self.manageSessions, text="Manage Sessions", bd=0,
                                     cursor="hand2",
-                                    bg="#EADDF7", fg="#5856a0", width=20, font=("Impact", 15))
+                                    bg="#EADDF7", fg="#110a4d", width=20, font=("Impact", 15))
         self.btnManageSess.grid(row=0, column=5, padx=10)
 
         # LogOut
         self.btnLogOut = Button(self.entriesFrame, command=self.logOut, text="Log Out", bd=0, cursor="hand2",
                                 bg="#EADDF7",
-                                fg="#5856a0", width=15, font=("Impact", 15))
+                                fg="#110a4d", width=15, font=("Impact", 15))
         self.btnLogOut.grid(row=0, column=6, padx=15, sticky="e")
 
     """Table Frame using TreeView"""
 
+    def print_element(event):
+        print("$$$$$$$$$$$$$$$$$$$$$$")
+        tree = event.widget
+        selection = [tree.item(item)["text"] for item in tree.selection()]
+        print("selected items:", selection)
     def tableOutputFrame(self):
         # Treeview Frame Configurations
         self.tableFrame = Frame(self.root, bg="#DADDE6")
@@ -300,21 +281,19 @@ class AdminControls:
 
         # Formatting the output table view
         self.out = ttk.Treeview(self.tableFrame, yscrollcommand=self.yScroll.set,
-                                columns=(1, 2, 3, 4, 5, 6, 7), style="mystyle.Treeview")
+                                columns=(1, 2), style="mystyle.Treeview")
+
+
+
+        #self.out.bind("<<TreeviewSelect>>", self.print_element)
+
+
         self.out.heading("1", text="Index")
         self.out.column("1", width=10)
         self.out.heading("2", text="Name")
         self.out.column("2", width=30)
-        self.out.heading("3", text="state")
-        self.out.column("3", width=5)
-        self.out.heading("4", text="pass")
-        self.out.column("4", width=8)
-        self.out.heading("5", text="  ")
-        self.out.column("5", width=10)
-        self.out.heading("6", text="   ")
-        self.out.column("6", width=6)
-        self.out.heading("7", text=" ")
-        self.out.column("7", width=5)
+        self.out.heading("2", text="result")
+        self.out.column("2", width=30)
 
         self.out['show'] = 'headings'
 
