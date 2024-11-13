@@ -65,7 +65,7 @@ class Benchmarks:
             for row in csvreader:
 
                 if (row[2] == "0"):
-                    rows.append((row[0], row[1], row[1].replace("\\n", "\n")))
+                    rows.append((row[0], row[1], row[1].replace("\\n", "\n"), row[1] )) #index , dsc , result
                 if (row[2] != "0"):
                     print("%%%%%%%")
                     print((row[2]))
@@ -81,8 +81,7 @@ class Benchmarks:
                     print("expected:", int(row[3]) == QueryResult[0][1], "result:", QueryResult[0][1])
 
 
-
-                    rows.append((row[0] , QueryResult[0][0]  , QueryResult[0][1] ,row[1].replace("\\n" , "\n") ))
+                    rows.append((row[0] ,QueryResult[0][0]  , QueryResult[0][1] , row[1] ))
 
         print(rows)
 

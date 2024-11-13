@@ -100,9 +100,10 @@ class AdminControls:
             self.selectedRow = self.out.focus()
             self.selectedData = self.out.item(self.selectedRow)
             self.chosenRow = self.selectedData["values"]
-            self.insName.set(self.chosenRow[2])
+            self.insName.set(self.chosenRow[1])
             self.txtName.delete('1.0', END)
-            self.txtName.set_html(self.chosenRow[2])
+
+            self.txtName.set_html(self.chosenRow[3])
             self.insGender.set(self.chosenRow[2])
             self.danceStyles.set(self.chosenRow[3])
             self.insTelNo.set(self.chosenRow[4])
@@ -152,6 +153,7 @@ class AdminControls:
         if self.txtName.get() == "" or self.txtTelNo.get() == "" or self.comboAvail.get() == "" or self.comboStyle.get() == "" or self.txthrRate.get() == "" or self.comboGender.get() == "" or self.txtUsername.get() == "" or self.txtPassword.get() == "":
             messagebox.showerror("Error!", "Choose an Instructor to Update Details!")
             return
+
 
         self.tempAvailDays = ', '.join(self.getAvailableDays())  # converting the list of Days into a string
 
@@ -281,7 +283,7 @@ class AdminControls:
 
         # Formatting the output table view
         self.out = ttk.Treeview(self.tableFrame, yscrollcommand=self.yScroll.set,
-                                columns=(1, 2), style="mystyle.Treeview")
+                                columns=(1, 2 ,3), style="mystyle.Treeview")
 
 
 
@@ -289,11 +291,11 @@ class AdminControls:
 
 
         self.out.heading("1", text="Index")
-        self.out.column("1", width=10)
+        self.out.column("1",anchor=CENTER, stretch=NO, width=50)
         self.out.heading("2", text="Name")
-        self.out.column("2", width=30)
-        self.out.heading("2", text="result")
-        self.out.column("2", width=30)
+        self.out.column("2",anchor=CENTER, stretch=NO, width=430)
+        self.out.heading("3", text="result")
+        self.out.column("3", anchor=CENTER, stretch=NO,width=230)
 
         self.out['show'] = 'headings'
 
