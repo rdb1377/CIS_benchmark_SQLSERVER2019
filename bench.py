@@ -56,32 +56,32 @@ class Benchmarks:
 
             return value.decode('utf-16le')
 
-    def view(self ):
+    def view(self):
         rows = []
         cur = self.connectionstring.cursor()
-        with open("queries3.csv", 'r' ) as file:
-            csvreader = csv.reader(file , delimiter= '')
+        with open("book1.csv", 'r' ) as file:
+            csvreader = csv.reader(file , delimiter= ',')
             header = next(csvreader)
             for row in csvreader:
-
+                print(row[0])
                 if (row[2] == "0"):
-                    rows.append((row[0], row[1], row[1].replace("\\n", "\n"), row[1] )) #index , dsc , result
+                    rows.append((row[0], row[1], "manual", row[1] )) #index , dsc , result , dsc
                 if (row[2] != "0"):
                     print("%%%%%%%")
                     print((row[2]))
                     cur.execute(row[2])
                     QueryResult = cur.fetchall()
 
-                    print("******" + row[2])
-                    for index in range(3,len(row)):
-                       if(int(row[index]) == QueryResult[0][index-2]):
+                    for index in range(4,len(row)):
+                       #print("!!!!!!!!!!",row[index] , QueryResult[0])
+                       if(int(row[index]) == QueryResult[0][index-3]):
                            print("biobio")
 
 
-                    print("expected:", int(row[3]) == QueryResult[0][1], "result:", QueryResult[0][1])
+                    #print("expected:", int(row[3]) == QueryResult[0][1], "result:", QueryResult[0][1])
 
 
-                    rows.append((row[0] ,QueryResult[0][0]  , QueryResult[0][1] , row[1] ))
+                    rows.append((row[0] ,QueryResult[0][0]  , QueryResult[0][1] , row[1] , row[3] ))  #index , queryname , result , dsc
 
         print(rows)
 
@@ -90,3 +90,13 @@ class Benchmarks:
         # rows = cur.fetchall()
         # print(rows)
         return rows
+
+    def executeQueries(self , remedition):
+        rows = []
+        print("##########", remedition)
+        cur = self.connectionstring.cursor()
+        cur.execute(remedition)
+        print("##########", cur.messages)
+        result = cur.messages
+
+        return result

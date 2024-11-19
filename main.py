@@ -5,7 +5,7 @@ import login
 #main method
 def main():
     root = tk.Tk()
-    root.title("DanceFeet Academy")
+    root.title("CIS Hardening")
     root.geometry("1400x930+100+50")
     root.resizable(0,0)
 

@@ -32,8 +32,7 @@ class AdminControls:
         self.database = StringVar()
         self.cnxn = cnxn
 
-        # Days of the week List
-        self.weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+
 
         # Call the tkinter frames to the window
 
@@ -62,39 +61,30 @@ class AdminControls:
         self.labelName = Label(self.entriesFrame, text="Name", font=("Times New Roman", 16, "bold"), bg="#110a4d",fg="white")
         self.labelName.grid(row=1, column=0, padx=10, pady=5, sticky="w")
         #self.txtName = st.ScrolledText(self.entriesFrame,  font=("Times New Roman", 16), width=40 , height=7 , relief=GROOVE , wrap= tkinter.WORD)
-        self.txtName = HTMLScrolledText(self.entriesFrame  , html= '<html>hiiiiiiii</html>' , height= 15)
+        self.txtName = HTMLScrolledText(self.entriesFrame  , html= '<html>hiiiiiiii</html>' , height= 15 , width=80)
         #self.txtName.place(x=40, y=100, width=180, height=60)
         self.txtName.grid(row=1, column=1, padx=10, pady=5 ,sticky=W + N + S + E)
 
         # Instructor Gender
         self.LabelDatabase = Label(self.entriesFrame, text="database", font=("Times New Roman", 16, "bold"), bg="#110a4d", fg="white")
-        self.LabelDatabase.grid(row=1, column=2, padx=10, pady=5, sticky="w")
+        self.LabelDatabase.grid(row=0, column=2, padx=10, pady=5, sticky="w")
 
 
         self.databases_combo = ttk.Combobox(self.entriesFrame, textvariable=self.database, font=("Times New Roman", 15),width=28, state="readonly")
         self.databases_combo['values'] = res
         self.databases_combo.bind("<<ComboboxSelected>>",lambda event, entry=self.databases_combo: self.benchmark.buildCNXN(entry.get()))
-        self.databases_combo.grid(row=1, column=3, padx=10, pady=5, sticky="w")
+        self.databases_combo.grid(row=0, column=3, padx=10, pady=5, sticky="w")
 
-        #
-        # # Instructor Availability
-        # self.labelAvail = Label(self.entriesFrame, text="Availability", font=("Times New Roman", 16, "bold"), bg="#110a4d",fg="white")
-        # self.labelAvail.grid(row=3, column=2, padx=10, pady=5, sticky="w")
-        # self.comboAvail = ttk.Combobox(self.entriesFrame, textvariable=self.avail, font=("Times New Roman", 15), width=28,state="readonly")
-        # self.comboAvail['values'] = ("AVAILABLE", "NOT AVAILABLE")
-        # self.comboAvail.grid(row=3, column=3, padx=10, pady=5, sticky="w")
-        #
-        # # Instructor Working Days
-        # self.labelListDays = Label(self.entriesFrame, text="Choose Available Days",font=("Times New Roman", 16, "bold"), bg="#110a4d",fg="white")
-        # self.labelListDays.grid(row=4, column=2, padx=10, pady=5, sticky="w")
-        # self.listDays = Listbox(self.entriesFrame, selectmode=MULTIPLE, font=("Times New Roman", 10), width=50,height=7)
-        # self.listDays.grid(row=4, column=3, columnspan=3, rowspan=6, padx=10, pady=5, sticky="w")
+
+        self.labelAvail = Label(self.entriesFrame, text="Availability", font=("Times New Roman", 16, "bold"), bg="#110a4d",fg="white")
+        self.labelAvail.grid(row=1, column=2, padx=10, pady=5, sticky="w")
+        self.comboAvail = st.ScrolledText(self.entriesFrame,  font=("Times New Roman", 16), width=40 , height=7 , relief=GROOVE , wrap= tkinter.WORD)
+
+        self.comboAvail.grid(row=1, column=3, padx=10, pady=5, sticky="w")
 
 
 
-    """Sub Methods to be used in primary CTA methods"""
 
-    # event trigger Method to display the chosen data from the TreeView back in respective fields
     def getData(self, event):
         try:
             self.selectedRow = self.out.focus()
@@ -116,7 +106,6 @@ class AdminControls:
             pass
 
 
-    # Event trigger method to display the weekdays depending on the comboBox value
     def selectDays(self, event):
         if self.comboAvail.get() == "NOT AVAILABLE":
             self.listDays.delete(0, END)
@@ -125,7 +114,6 @@ class AdminControls:
             for day in self.weekdays:
                 self.listDays.insert(END, day)
 
-    # Method to get the selected (available) days from the ListBox Widget
     def getAvailableDays(self):
         self.availDays = []
         for day in self.listDays.curselection():
@@ -147,7 +135,8 @@ class AdminControls:
                             self.txtUsername.get(), self.txtPassword.get())
         messagebox.showinfo("Success!", "Record Successfully Insertered!")
         self.resetForm()
-        self.viewInstructor()
+        self.viewIndex()
+
 
     def assignInstructor(self):
         if self.txtName.get() == "" or self.txtTelNo.get() == "" or self.comboAvail.get() == "" or self.comboStyle.get() == "" or self.txthrRate.get() == "" or self.comboGender.get() == "" or self.txtUsername.get() == "" or self.txtPassword.get() == "":
@@ -164,22 +153,23 @@ class AdminControls:
                               self.txtUsername.get(), self.txtPassword.get())
             messagebox.showinfo("Success!", "Record Successfully Updated!")
             self.resetForm()
-            self.viewInstructor()
+            self.viewIndex()
         except AttributeError as error:
             messagebox.showerror("Error!", "Choose an existing Instructor to Update Details")
 
     # Method to remove selected instructor from the database
     def dltInstructor(self):
         try:
-            db.removeInstructor(self.chosenRow[0])
+            print("1111111111" , self.chosenRow[4])
+            self.benchmark.executeQueries(self.chosenRow[4])
 
-            self.resetForm()
-            self.viewInstructor()
         except AttributeError as error:
             messagebox.showerror("Error!", "Please Choose an Instructor Record to Remove!")
 
+
+
     # Method to display all instructors in the Treeview Frame
-    def viewInstructor(self):
+    def viewIndex(self):
         self.out.delete(*self.out.get_children())  # emptying the table before reloading
         for row in self.benchmark.view():
             self.out.insert("", END, values=row)
@@ -217,43 +207,43 @@ class AdminControls:
         self.buttonsFrame = Frame(self.entriesFrame, bg="#110a4d")
         self.buttonsFrame.grid(row=10, column=0, padx=10, pady=10, sticky="w", columnspan=8)
 
-        # Add a new Record
-        self.btnAdd = Button(self.buttonsFrame, command=self.addInstructor, text="Add Instructor", bd=0, cursor="hand2",
-                             bg="#EADDF7",
-                             fg="#110a4d", width=20, font=("Impact", 15))
-        self.btnAdd.grid(row=0, column=0, padx=10)
 
-        # Update Selected Record
-        self.btnUpdate = Button(self.buttonsFrame, command=self.assignInstructor, text="Update Instructor", bd=0,
-                                cursor="hand2",
-                                bg="#EADDF7",
-                                fg="#110a4d", width=20, font=("Impact", 15))
-        self.btnUpdate.grid(row=0, column=1, padx=10)
+        # self.btnAdd = Button(self.buttonsFrame, command=self.addInstructor, text="Add", bd=0, cursor="hand2",
+        #                      bg="#EADDF7",
+        #                      fg="#110a4d", width=20, font=("Impact", 15))
+        # self.btnAdd.grid(row=0, column=0, padx=10)
 
-        # Delete Selected Record
-        self.btnDlt = Button(self.buttonsFrame, command=self.dltInstructor, text="Remove Instructor", bd=0,
+
+        # self.btnUpdate = Button(self.buttonsFrame, command=self.assignInstructor, text="Update Instructor", bd=0,
+        #                         cursor="hand2",
+        #                         bg="#EADDF7",
+        #                         fg="#110a4d", width=20, font=("Impact", 15))
+        # self.btnUpdate.grid(row=0, column=1, padx=10)
+
+
+        self.btnDlt = Button(self.buttonsFrame, command=self.dltInstructor, text="Run Remediation ", bd=0,
                              cursor="hand2",
                              bg="#EADDF7",
                              fg="#110a4d", width=20, font=("Impact", 15))
         self.btnDlt.grid(row=0, column=2, padx=10)
 
         # Reset Widget Inputs
-        self.btnReset = Button(self.buttonsFrame, command=self.resetForm, text="Reset Form", bd=0, cursor="hand2",
-                               bg="#EADDF7", fg="#110a4d", width=20, font=("Impact", 15))
-        self.btnReset.grid(row=0, column=3, padx=10)
+        # self.btnReset = Button(self.buttonsFrame, command=self.resetForm, text="Reset Form", bd=0, cursor="hand2",
+        #                        bg="#EADDF7", fg="#110a4d", width=20, font=("Impact", 15))
+        # self.btnReset.grid(row=0, column=3, padx=10)
 
         # Display List
-        self.btnView = Button(self.buttonsFrame, command=self.viewInstructor, text="View Instructor List", bd=0,
+        self.btnView = Button(self.buttonsFrame, command=self.viewIndex, text="View List", bd=0,
                               cursor="hand2",
                               bg="#EADDF7",
                               fg="#110a4d", width=20, font=("Impact", 15))
         self.btnView.grid(row=0, column=4, padx=10)
 
         # Manage Sessions
-        self.btnManageSess = Button(self.buttonsFrame, command=self.manageSessions, text="Manage Sessions", bd=0,
-                                    cursor="hand2",
-                                    bg="#EADDF7", fg="#110a4d", width=20, font=("Impact", 15))
-        self.btnManageSess.grid(row=0, column=5, padx=10)
+        # self.btnManageSess = Button(self.buttonsFrame, command=self.manageSessions, text="Manage Sessions", bd=0,
+        #                             cursor="hand2",
+        #                             bg="#EADDF7", fg="#110a4d", width=20, font=("Impact", 15))
+        # self.btnManageSess.grid(row=0, column=5, padx=10)
 
         # LogOut
         self.btnLogOut = Button(self.entriesFrame, command=self.logOut, text="Log Out", bd=0, cursor="hand2",
@@ -295,7 +285,7 @@ class AdminControls:
         self.out.heading("2", text="Name")
         self.out.column("2",anchor=CENTER, stretch=NO, width=430)
         self.out.heading("3", text="result")
-        self.out.column("3", anchor=CENTER, stretch=NO,width=230)
+        self.out.column("3", anchor=CENTER, stretch=NO,width=430)
 
         self.out['show'] = 'headings'
 
