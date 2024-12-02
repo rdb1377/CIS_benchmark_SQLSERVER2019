@@ -54,14 +54,14 @@ class AdminControls:
 
         self.entriesFrame = Frame(self.root, bg="#110a4d")
         self.entriesFrame.pack(side=TOP, fill=X)
-        self.admin_frame_title = Label(self.entriesFrame, text="welcome", font=("Goudy old style", 35), bg="#110a4d",fg="white")
+        self.admin_frame_title = Label(self.entriesFrame, text=".", font=("Goudy old style", 35), bg="#110a4d",fg="white")
         self.admin_frame_title.grid(row=0, columnspan=2, padx=10, pady=20, sticky="w")
 
         # Instructor Name
-        self.labelName = Label(self.entriesFrame, text="Name", font=("Times New Roman", 16, "bold"), bg="#110a4d",fg="white")
+        self.labelName = Label(self.entriesFrame, text="Description", font=("Times New Roman", 16, "bold"), bg="#110a4d",fg="white")
         self.labelName.grid(row=1, column=0, padx=10, pady=5, sticky="w")
         #self.txtName = st.ScrolledText(self.entriesFrame,  font=("Times New Roman", 16), width=40 , height=7 , relief=GROOVE , wrap= tkinter.WORD)
-        self.txtName = HTMLScrolledText(self.entriesFrame  , html= '<html>hiiiiiiii</html>' , height= 15 , width=80)
+        self.txtName = HTMLScrolledText(self.entriesFrame  , html= '<html></html>' , height= 15 , width=70)
         #self.txtName.place(x=40, y=100, width=180, height=60)
         self.txtName.grid(row=1, column=1, padx=10, pady=5 ,sticky=W + N + S + E)
 
@@ -76,13 +76,10 @@ class AdminControls:
         self.databases_combo.grid(row=0, column=3, padx=10, pady=5, sticky="w")
 
 
-        self.labelAvail = Label(self.entriesFrame, text="Availability", font=("Times New Roman", 16, "bold"), bg="#110a4d",fg="white")
+        self.labelAvail = Label(self.entriesFrame, text="Remediation", font=("Times New Roman", 16, "bold"), bg="#110a4d",fg="white")
         self.labelAvail.grid(row=1, column=2, padx=10, pady=5, sticky="w")
         self.comboAvail = st.ScrolledText(self.entriesFrame,  font=("Times New Roman", 16), width=40 , height=7 , relief=GROOVE , wrap= tkinter.WORD)
-
         self.comboAvail.grid(row=1, column=3, padx=10, pady=5, sticky="w")
-
-
 
 
     def getData(self, event):
@@ -157,14 +154,14 @@ class AdminControls:
         except AttributeError as error:
             messagebox.showerror("Error!", "Choose an existing Instructor to Update Details")
 
-    # Method to remove selected instructor from the database
-    def dltInstructor(self):
+
+    def runRemediation(self):
         try:
             print("1111111111" , self.chosenRow[4])
             self.benchmark.executeQueries(self.chosenRow[4])
 
         except AttributeError as error:
-            messagebox.showerror("Error!", "Please Choose an Instructor Record to Remove!")
+            messagebox.showerror("Error!", "Please Choose a Row")
 
 
 
@@ -221,7 +218,7 @@ class AdminControls:
         # self.btnUpdate.grid(row=0, column=1, padx=10)
 
 
-        self.btnDlt = Button(self.buttonsFrame, command=self.dltInstructor, text="Run Remediation ", bd=0,
+        self.btnDlt = Button(self.buttonsFrame, command=self.runRemediation, text="Run Remediation ", bd=0,
                              cursor="hand2",
                              bg="#EADDF7",
                              fg="#110a4d", width=20, font=("Impact", 15))
@@ -261,7 +258,7 @@ class AdminControls:
     def tableOutputFrame(self):
         # Treeview Frame Configurations
         self.tableFrame = Frame(self.root, bg="#DADDE6")
-        self.tableFrame.place(x=0, y=400, width=1400, height=560)
+        self.tableFrame.place(x=0, y=420, width=1400, height=520)
         self.yScroll = Scrollbar(self.tableFrame)
         self.yScroll.pack(side=RIGHT, fill=Y)
 
@@ -281,11 +278,11 @@ class AdminControls:
 
 
         self.out.heading("1", text="Index")
-        self.out.column("1",anchor=CENTER, stretch=NO, width=50)
+        self.out.column("1",anchor=CENTER, stretch=NO, width=100)
         self.out.heading("2", text="Name")
-        self.out.column("2",anchor=CENTER, stretch=NO, width=430)
+        self.out.column("2",anchor=CENTER, stretch=NO, width=830)
         self.out.heading("3", text="result")
-        self.out.column("3", anchor=CENTER, stretch=NO,width=430)
+        self.out.column("3", anchor=CENTER, stretch=NO,width=230)
 
         self.out['show'] = 'headings'
 

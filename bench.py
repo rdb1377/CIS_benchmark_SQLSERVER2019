@@ -67,21 +67,23 @@ class Benchmarks:
                 if (row[2] == "0"):
                     rows.append((row[0], row[1], "manual", row[1] )) #index , dsc , result , dsc
                 if (row[2] != "0"):
-                    print("%%%%%%%")
+                    print("%%%%%%%" , row[4])
                     print((row[2]))
                     cur.execute(row[2])
                     QueryResult = cur.fetchall()
-
-                    for index in range(4,len(row)):
-                       #print("!!!!!!!!!!",row[index] , QueryResult[0])
-                       if(int(row[index]) == QueryResult[0][index-3]):
-                           print("biobio")
+                    flag= 1
+                    if QueryResult:
+                        for index in range(4,int(row[4])+4):
+                           print("!!!!!!!!!!",row[index] , QueryResult[0])
+                           if(int(row[index]) != QueryResult[0][index-3]):
+                               print("biobio" ,index, row[index] , QueryResult[0][index-3])
+                               flag = 0
 
 
                     #print("expected:", int(row[3]) == QueryResult[0][1], "result:", QueryResult[0][1])
 
 
-                    rows.append((row[0] ,QueryResult[0][0]  , QueryResult[0][1] , row[1] , row[3] ))  #index , queryname , result , dsc
+                        rows.append((row[0] ,QueryResult[0][0]  , flag , row[1] , row[3] ))  #index , queryname , result , dsc
 
         print(rows)
 
@@ -89,6 +91,7 @@ class Benchmarks:
         # cur.execute("SELECT * FROM sys.servers")
         # rows = cur.fetchall()
         # print(rows)
+        #cur.close()
         return rows
 
     def executeQueries(self , remedition):
@@ -98,5 +101,6 @@ class Benchmarks:
         cur.execute(remedition)
         print("##########", cur.messages)
         result = cur.messages
-
+        #cur.commit()
+        cur.close()
         return result
