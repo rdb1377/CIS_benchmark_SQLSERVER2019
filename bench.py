@@ -104,3 +104,5 @@ class Benchmarks:
         #cur.commit()
         cur.close()
         return result
+
+
