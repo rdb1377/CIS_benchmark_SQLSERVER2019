@@ -105,11 +105,12 @@ class Benchmarks:
                 elif (row[7] == "3"):
                     print("type 3")
                     flag = 0
+                    try:
+                        cur.execute(row[2])
+                        QueryResult = cur.fetchall()
 
-                    cur.execute(row[2])
-                    QueryResult = cur.fetchall()
-
-                    print (int(row[5]) , QueryResult[0][0])
+                    except pyodbc.Error as e:
+                        print (int(row[5]) , QueryResult[0][0])
 
                     if QueryResult:
                         if (int(row[5]) >= QueryResult[0][0]):
@@ -128,11 +129,31 @@ class Benchmarks:
                         if res[5] ==  "AUDIT_CHANGE_GROUP" or res[5] == "FAILED_LOGIN_GROUP" or res[5] == "SUCCESSFUL_LOGIN_GROUP":
                             count +=1
 
-
                     if count == 3:
                         flag = 1
 
                     rows.append((row[0], row[1], flag, row[1],))
+
+                elif (row[7] == "5"):
+                    print("type 5")
+                    flag = 0
+                    cur.execute(row[2])
+                    QueryResult = cur.fetchall()
+
+                    try:
+                        cur.execute(row[2])
+                        QueryResult = cur.fetchall()
+
+                    except pyodbc.Error as e:
+                        print (int(row[5]) , QueryResult[0][0])
+
+                    if QueryResult:
+                        if ((row[5]) != QueryResult[0][0]):
+                            print(row[5] , QueryResult[0][0])
+                            flag = 1
+                    rows.append((row[0], row[1], flag, row[1], ))
+
+
 
 
         print(rows)
