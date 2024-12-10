@@ -54,32 +54,32 @@ class AdminControls:
 
         self.entriesFrame = Frame(self.root, bg="#110a4d")
         self.entriesFrame.pack(side=TOP, fill=X)
-        self.admin_frame_title = Label(self.entriesFrame, text=".", font=("Goudy old style", 35), bg="#110a4d",fg="white")
-        self.admin_frame_title.grid(row=0, columnspan=2, padx=10, pady=20, sticky="w")
+        self.admin_frame_title = Label(self.entriesFrame, text="Description", font=("Goudy old style", 20), bg="#110a4d",fg="white")
+        self.admin_frame_title.grid(row=0, column=0, padx=0, pady=0, sticky="w")
 
         # Instructor Name
-        self.labelName = Label(self.entriesFrame, text="Description", font=("Times New Roman", 16, "bold"), bg="#110a4d",fg="white")
-        self.labelName.grid(row=1, column=0, padx=10, pady=5, sticky="w")
+        # self.labelName = Label(self.entriesFrame, text="Description", font=("Times New Roman", 16, "bold"), bg="#110a4d",fg="white")
+        # self.labelName.grid(row=1, column=0, padx=10, pady=5, sticky="w")
         #self.txtName = st.ScrolledText(self.entriesFrame,  font=("Times New Roman", 16), width=40 , height=7 , relief=GROOVE , wrap= tkinter.WORD)
-        self.txtName = HTMLScrolledText(self.entriesFrame  , html= '<html></html>' , height= 15 , width=70)
+        self.txtName = HTMLScrolledText(self.entriesFrame  , html= '<html></html>' , height= 18 , width=100)
         #self.txtName.place(x=40, y=100, width=180, height=60)
-        self.txtName.grid(row=1, column=1, padx=10, pady=5 ,sticky=W + N + S + E)
+        self.txtName.grid(row=1, column=0, padx=10, pady=5 ,sticky=W + N + S + E)
 
         # Instructor Gender
         self.LabelDatabase = Label(self.entriesFrame, text="database", font=("Times New Roman", 16, "bold"), bg="#110a4d", fg="white")
-        self.LabelDatabase.grid(row=0, column=2, padx=10, pady=5, sticky="w")
+        self.LabelDatabase.place(x= 850 , y = 10)
 
 
         self.databases_combo = ttk.Combobox(self.entriesFrame, textvariable=self.database, font=("Times New Roman", 15),width=28, state="readonly")
         self.databases_combo['values'] = res
         self.databases_combo.bind("<<ComboboxSelected>>",lambda event, entry=self.databases_combo: self.benchmark.buildCNXN(entry.get()))
-        self.databases_combo.grid(row=0, column=3, padx=10, pady=5, sticky="w")
+        self.databases_combo.place(x= 850 , y = 40)
 
 
         self.labelAvail = Label(self.entriesFrame, text="Remediation", font=("Times New Roman", 16, "bold"), bg="#110a4d",fg="white")
-        self.labelAvail.grid(row=1, column=2, padx=10, pady=5, sticky="w")
+        self.labelAvail.place(x= 850 , y = 80)
         self.comboAvail = st.ScrolledText(self.entriesFrame,  font=("Times New Roman", 16), width=40 , height=7 , relief=GROOVE , wrap= tkinter.WORD)
-        self.comboAvail.grid(row=1, column=3, padx=10, pady=5, sticky="w")
+        self.comboAvail.grid(row=1, column=1, padx=10, pady=5, sticky="w")
 
 
     def getData(self, event):
@@ -169,7 +169,7 @@ class AdminControls:
     def viewIndex(self):
         self.out.delete(*self.out.get_children())  # emptying the table before reloading
         for row in self.benchmark.view():
-            self.out.insert("", END, values=row)
+            self.out.insert("", END, values=row, tags=row[2] )
 
     # Method to direct to the next Frame to Assign Instructors
     def manageSessions(self):
@@ -243,7 +243,7 @@ class AdminControls:
         # self.btnManageSess.grid(row=0, column=5, padx=10)
 
         # LogOut
-        self.btnLogOut = Button(self.entriesFrame, command=self.logOut, text="Log Out", bd=0, cursor="hand2",
+        self.btnLogOut = Button(self.buttonsFrame, command=self.logOut, text="Log Out", bd=0, cursor="hand2",
                                 bg="#EADDF7",
                                 fg="#110a4d", width=15, font=("Impact", 15))
         self.btnLogOut.grid(row=0, column=6, padx=15, sticky="e")
@@ -271,6 +271,8 @@ class AdminControls:
         # Formatting the output table view
         self.out = ttk.Treeview(self.tableFrame, yscrollcommand=self.yScroll.set,
                                 columns=(1, 2 ,3), style="mystyle.Treeview")
+        self.out.tag_configure('1', background='lightgreen')
+        self.out.tag_configure('0', background='red')
 
 
 

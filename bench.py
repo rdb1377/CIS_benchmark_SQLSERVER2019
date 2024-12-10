@@ -137,15 +137,12 @@ class Benchmarks:
                 elif (row[7] == "5"):
                     print("type 5")
                     flag = 0
-                    cur.execute(row[2])
-                    QueryResult = cur.fetchall()
-
                     try:
                         cur.execute(row[2])
                         QueryResult = cur.fetchall()
 
                     except pyodbc.Error as e:
-                        print (int(row[5]) , QueryResult[0][0])
+                        print ("EEEEEEEEEEERRRRRRRRRRRR")
 
                     if QueryResult:
                         if ((row[5]) != QueryResult[0][0]):
@@ -153,7 +150,23 @@ class Benchmarks:
                             flag = 1
                     rows.append((row[0], row[1], flag, row[1], ))
 
+                elif (row[7] == "6"):
+                    print("type 6")
+                    flag = 1
 
+                    try:
+                        cur.execute(row[2])
+                        QueryResult = cur.fetchall()
+
+                    except pyodbc.Error as e:
+                        print ("EEEEEEEEEEERRRRRRRRRRRR")
+
+                    if QueryResult:
+                        for res in QueryResult:
+                            if res[1] != row[5]:
+                                flag = 0
+
+                    rows.append((row[0], row[1], flag, row[1],))
 
 
         print(rows)
