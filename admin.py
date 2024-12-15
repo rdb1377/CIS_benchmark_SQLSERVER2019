@@ -1,13 +1,15 @@
-import tkinter
-from tkinter import *
-from tkinter import ttk
+import ttkbootstrap
+import tkinter as tkinter
+from  ttkbootstrap import *
+# from tkinter import ttk
 from database import Database
 from tkinter import messagebox
 import login
 import sessions
 from bench import Benchmarks
-import tkinter.scrolledtext as st
+import ttkbootstrap.scrolled as st
 from tkhtmlview import HTMLScrolledText
+import ttkbootstrap as boot
 
 
 import pyodbc
@@ -37,9 +39,10 @@ class AdminControls:
         # Call the tkinter frames to the window
 
         self.benchmark = Benchmarks(cnxn)
+        self.tableOutputFrame()
         self.adminControlsFrame(cnxn)
         self.adminFrameButtons()
-        self.tableOutputFrame()
+
 
 
     """Instructor Info Entries Frame"""
@@ -52,31 +55,31 @@ class AdminControls:
         # Admin Control Frame Configurations
         res = self.benchmark.get_databases()
 
-        self.entriesFrame = Frame(self.root, bg="#110a4d")
+        self.entriesFrame = Frame(self.root)
         self.entriesFrame.pack(side=TOP, fill=X)
-        self.admin_frame_title = Label(self.entriesFrame, text="Description", font=("Goudy old style", 20), bg="#110a4d",fg="white")
+        self.admin_frame_title = Label(self.entriesFrame, text="Description", font=("Goudy old style", 20))
         self.admin_frame_title.grid(row=0, column=0, padx=0, pady=0, sticky="w")
 
         # Instructor Name
         # self.labelName = Label(self.entriesFrame, text="Description", font=("Times New Roman", 16, "bold"), bg="#110a4d",fg="white")
         # self.labelName.grid(row=1, column=0, padx=10, pady=5, sticky="w")
         #self.txtName = st.ScrolledText(self.entriesFrame,  font=("Times New Roman", 16), width=40 , height=7 , relief=GROOVE , wrap= tkinter.WORD)
-        self.txtName = HTMLScrolledText(self.entriesFrame  , html= '<html></html>' , height= 18 , width=100)
+        self.txtName = HTMLScrolledText(self.entriesFrame  , html= '<html></html>' , height= 21 , width=100)
         #self.txtName.place(x=40, y=100, width=180, height=60)
         self.txtName.grid(row=1, column=0, padx=10, pady=5 ,sticky=W + N + S + E)
 
         # Instructor Gender
-        self.LabelDatabase = Label(self.entriesFrame, text="database", font=("Times New Roman", 16, "bold"), bg="#110a4d", fg="white")
+        self.LabelDatabase = Label(self.entriesFrame, text="database", font=("Times New Roman", 16, "bold"))
         self.LabelDatabase.place(x= 850 , y = 10)
 
 
-        self.databases_combo = ttk.Combobox(self.entriesFrame, textvariable=self.database, font=("Times New Roman", 15),width=28, state="readonly")
+        self.databases_combo = boot.Combobox(self.entriesFrame, textvariable=self.database, font=("Times New Roman", 15), width=28, state="readonly")
         self.databases_combo['values'] = res
         self.databases_combo.bind("<<ComboboxSelected>>",lambda event, entry=self.databases_combo: self.benchmark.buildCNXN(entry.get()))
         self.databases_combo.place(x= 850 , y = 40)
 
 
-        self.labelAvail = Label(self.entriesFrame, text="Remediation", font=("Times New Roman", 16, "bold"), bg="#110a4d",fg="white")
+        self.labelAvail = Label(self.entriesFrame, text="Remediation", font=("Times New Roman", 16, "bold"))
         self.labelAvail.place(x= 850 , y = 80)
         self.comboAvail = st.ScrolledText(self.entriesFrame,  font=("Times New Roman", 16), width=40 , height=7 , relief=GROOVE , wrap= tkinter.WORD)
         self.comboAvail.grid(row=1, column=1, padx=10, pady=5, sticky="w")
@@ -201,7 +204,7 @@ class AdminControls:
 
     def adminFrameButtons(self):
         # Button Frame Configurations
-        self.buttonsFrame = Frame(self.entriesFrame, bg="#110a4d")
+        self.buttonsFrame = Frame(self.entriesFrame)
         self.buttonsFrame.grid(row=10, column=0, padx=10, pady=10, sticky="w", columnspan=8)
 
 
@@ -218,10 +221,10 @@ class AdminControls:
         # self.btnUpdate.grid(row=0, column=1, padx=10)
 
 
-        self.btnDlt = Button(self.buttonsFrame, command=self.runRemediation, text="Run Remediation ", bd=0,
+        self.btnDlt = Button(self.buttonsFrame, command=self.runRemediation, text="Run Remediation ",
                              cursor="hand2",
-                             bg="#EADDF7",
-                             fg="#110a4d", width=20, font=("Impact", 15))
+
+                             width=20)
         self.btnDlt.grid(row=0, column=2, padx=10)
 
         # Reset Widget Inputs
@@ -230,10 +233,9 @@ class AdminControls:
         # self.btnReset.grid(row=0, column=3, padx=10)
 
         # Display List
-        self.btnView = Button(self.buttonsFrame, command=self.viewIndex, text="View List", bd=0,
+        self.btnView = Button(self.buttonsFrame, command=self.viewIndex, text="View List",
                               cursor="hand2",
-                              bg="#EADDF7",
-                              fg="#110a4d", width=20, font=("Impact", 15))
+                               width=20)
         self.btnView.grid(row=0, column=4, padx=10)
 
         # Manage Sessions
@@ -243,9 +245,8 @@ class AdminControls:
         # self.btnManageSess.grid(row=0, column=5, padx=10)
 
         # LogOut
-        self.btnLogOut = Button(self.buttonsFrame, command=self.logOut, text="Log Out", bd=0, cursor="hand2",
-                                bg="#EADDF7",
-                                fg="#110a4d", width=15, font=("Impact", 15))
+        self.btnLogOut = Button(self.buttonsFrame, command=self.logOut, text="Log Out", cursor="hand2",
+                                 width=15)
         self.btnLogOut.grid(row=0, column=6, padx=15, sticky="e")
 
     """Table Frame using TreeView"""
@@ -257,22 +258,22 @@ class AdminControls:
         print("selected items:", selection)
     def tableOutputFrame(self):
         # Treeview Frame Configurations
-        self.tableFrame = Frame(self.root, bg="#DADDE6")
+        self.tableFrame = Frame(self.root)
         self.tableFrame.place(x=0, y=420, width=1400, height=520)
         self.yScroll = Scrollbar(self.tableFrame)
         self.yScroll.pack(side=RIGHT, fill=Y)
 
         # ttk style object to add configurations
-        self.style = ttk.Style()
+        self.style = boot.Style()
         self.style.configure("mystyle.Treeview", font=('Calibri', 12),
                              rowheight=50)
         self.style.configure("mystyle.Treeview.Heading", font=('Times New Roman', 14, "bold"), sticky="w")
 
         # Formatting the output table view
-        self.out = ttk.Treeview(self.tableFrame, yscrollcommand=self.yScroll.set,
-                                columns=(1, 2 ,3), style="mystyle.Treeview")
+        self.out = boot.Treeview(self.tableFrame, yscrollcommand=self.yScroll.set,
+                                 columns=(1, 2 ,3), style="mystyle.Treeview")
         self.out.tag_configure('1', background='lightgreen')
-        self.out.tag_configure('0', background='red')
+        self.out.tag_configure('0', background='pink')
 
 
 
@@ -293,5 +294,5 @@ class AdminControls:
         # self.comboAvail.bind("<<ComboboxSelected>>", self.selectDays)
 
         # TreeView output layout configurations
-        self.out.pack(fill=X)
+        self.out.place(relx=0.01, rely=0.01,width=1000 , height=500)
         self.yScroll.config(command=self.out.yview)

@@ -11,7 +11,7 @@ class Benchmarks:
 
             self.connectionstring = pyodbc.connect("Driver={" + self.cnxn.driver + "};"
                       "Server="+ self.cnxn.servername +";"
-                      "Database=bon;"
+                      "Database=master;"
                       "Trusted_Connection=yes;"
                       "TrustServerCertificate=yes;"
                       "NeedODBCTypesOnly=1")
@@ -24,7 +24,7 @@ class Benchmarks:
 
         elif self.cnxn.authmethod == 'SQL Server Authetication':
             self.connectionstring = pyodbc.connect(
-                'DRIVER={' + self.cnxn.driver + '};SERVER=' + self.cnxn.servername +  ';Database = {Mokhaberat} ;UID=' + self.cnxn.username + ';PWD=' + self.cnxn.password)
+                'DRIVER={' + self.cnxn.driver + '};SERVER=' + self.cnxn.servername +  ';Database = {master} ;UID=' + self.cnxn.username + ';PWD=' + self.cnxn.password)
 
     def buildCNXN(self , database):
         if (database =='') :

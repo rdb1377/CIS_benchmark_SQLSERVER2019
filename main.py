@@ -1,10 +1,10 @@
-import tkinter as tk
+import ttkbootstrap as tk
 from tkinter import ttk
 import login
 
 #main method
 def main():
-    root = tk.Tk()
+    root = tk.Window()
     root.title("CIS Hardening")
     root.geometry("1400x930+100+50")
     root.resizable(0,0)
