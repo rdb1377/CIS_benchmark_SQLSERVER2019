@@ -5,6 +5,12 @@ import pyodbc
 class Benchmarks:
     def __init__(self , cnxn):
         self.cnxn = cnxn
+        self.csvreader = []
+        self.data_list = []
+        with open("book1.csv", 'r' ) as file:
+
+            self.data_list = list(csv.reader(file , delimiter= ','))
+
         if self.cnxn.authmethod == 'Windows Authetication':
             # self.connectionstring = pyodbc.connect(
             #     'DRIVER={' + self.cnxn.driver + '};SERVER=' + self.cnxn.servername +  ';Trusted_Connection={yes} ;TrustServerCertificate={yes};  NeedODBCTypesOnly=1')
@@ -14,7 +20,8 @@ class Benchmarks:
                       "Database=master;"
                       "Trusted_Connection=yes;"
                       "TrustServerCertificate=yes;"
-                      "NeedODBCTypesOnly=1")
+                      "NeedODBCTypesOnly=1"
+                      ";autocommit=True")
 
             # self.connectionstring = pyodbc.connect("Driver={ODBC Driver 17 for SQL Server};"
             #           "Server=localhost;"
@@ -23,23 +30,26 @@ class Benchmarks:
 
 
         elif self.cnxn.authmethod == 'SQL Server Authetication':
+
             self.connectionstring = pyodbc.connect(
-                'DRIVER={' + self.cnxn.driver + '};SERVER=' + self.cnxn.servername +  ';Database = {master} ;UID=' + self.cnxn.username + ';PWD=' + self.cnxn.password)
+                'DRIVER={' + self.cnxn.driver + '};SERVER=' + self.cnxn.servername +  ';Database = {master} ;UID=' + self.cnxn.username + ';PWD=' + self.cnxn.password )
 
     def buildCNXN(self , database):
         if (database =='') :
             database = 'master'
-
+        print("AAAAAAAAAAAAAAAAAAA")
         if self.cnxn.authmethod== 'Windows Authetication':
             connectionstring = pyodbc.connect("Driver={" + self.cnxn.driver + "};"
                               "Server=" + self.cnxn.servername + ";"
                               "Database="+database+";"
                               "Trusted_Connection=yes;"
                               "TrustServerCertificate=yes;"
-                              "NeedODBCTypesOnly=1")
+                              "NeedODBCTypesOnly=1;"
+                               ,autocommit=True
+                              )
 
         elif self.cnxn.authmethod == 'SQL Server Authetication':
-            connectionstring = pyodbc.connect('DRIVER={' + self.cnxn.driver + '};SERVER=' + self.cnxn.servername + ';Database ='+ database+ ';UID=' + self.cnxn.username + ';PWD=' + self.cnxn.password)
+            connectionstring = pyodbc.connect('DRIVER={' + self.cnxn.driver + '};SERVER=' + self.cnxn.servername + ';Database ='+ database+ ';UID=' + self.cnxn.username + ';PWD=' + self.cnxn.password )
         self.connectionstring = connectionstring
         print(database , self.connectionstring)
         return connectionstring
@@ -60,102 +70,104 @@ class Benchmarks:
         rows = []
         cur = self.connectionstring.cursor()
         with open("book1.csv", 'r' ) as file:
-            csvreader = csv.reader(file , delimiter= ',')
-            header = next(csvreader)
-            for row in csvreader:
+
+            self.csvreader = csv.reader(file , delimiter= ',')
+            header = next(self.csvreader)
+            for row in self.csvreader:
                 print(row[0] , row[7])
                 QueryResult = []
-                if (row[7] == "0"):  #manual
-                    rows.append((row[0], row[1], "manual", row[1] )) #index , dsc , result , dsc
-                elif (row[7] == "1"):  # type one
-                    print("%%%%%%%" , row[4])
-                    print((row[2]))
+                if (row[4] == "0"):  #manual
+                    rows.append((row[1], row[2], "manual", row[2], row[0] )) #index , dsc , result , dsc
+                elif (row[4] == "1"):  # type one
+                    print("%%%%%%%" , row[5])
+                    print((row[3]))
                     try:
-                        cur.execute(row[2])
+                        cur.execute(row[3])
                         QueryResult = cur.fetchall()
+                        print(cur.messages)
                         flag= 1
                     except pyodbc.Error as e:
                         print ("EEEEEEEEEEEEERRRRRRRRR")
                     if QueryResult:
-                        for index in range(4,int(row[4])+4):
+                        for index in range(6,int(row[5])+6):
                            print("!!!!!!!!!!",row[index] , QueryResult[0])
-                           if(int(row[index]) != QueryResult[0][index-3]):
-                               print("biobio" ,index, row[index] , QueryResult[0][index-3])
+                           if(row[index] != str(QueryResult[0][index-5])):
+                               print("biobio" ,index, row[index] , QueryResult[0][index-5])
                                flag = 0
 
 
                     #print("expected:", int(row[3]) == QueryResult[0][1], "result:", QueryResult[0][1])
 
 
-                        rows.append((row[0] ,QueryResult[0][0]  , flag , row[1] , row[3] ))  #index , queryname , result , dsc
+                        rows.append((row[1] ,QueryResult[0][0]  , flag , row[2], row[0] ))  #index , queryname , result , dsc
 
-                elif (row[7] == "2"):
+                elif (row[4] == "2"):
                     print("type 2")
                     flag = 1
                     try:
-                        cur.execute(row[2])
+                        cur.execute(row[3])
                         QueryResult = cur.fetchall()
 
                     except pyodbc.Error as e:
                         print ("EEEEEEEEEEEEERRRRRRRRR")
                     if QueryResult:
                         flag = 0
-                    rows.append((row[0], row[1], flag, row[1], ))
+                    rows.append((row[1], row[2], flag, row[2],row[0],QueryResult))
 
-                elif (row[7] == "3"):
+                elif (row[4] == "3"):
                     print("type 3")
                     flag = 0
                     try:
-                        cur.execute(row[2])
+                        cur.execute(row[3])
                         QueryResult = cur.fetchall()
 
                     except pyodbc.Error as e:
-                        print (int(row[5]) , QueryResult[0][0])
+                        print (int(row[6]) , QueryResult[0][0])
 
                     if QueryResult:
-                        if (int(row[5]) >= QueryResult[0][0]):
-                            print(row[5] , QueryResult[0][0])
+                        if (int(row[6]) <= QueryResult[0][0]):
+                            print(row[6] , QueryResult[0][0])
                             flag = 1
-                    rows.append((row[0], row[1], flag, row[1], ))
+                    rows.append((row[1], row[2], flag, row[2],row[0] ))
 
-                elif(row[7] == "4"):
+                elif(row[4] == "4"):
                     print("type 4")
                     flag = 0
                     count = 0
-                    cur.execute(row[2])
+                    cur.execute(row[3])
                     QueryResult = cur.fetchall()
 
                     for res in QueryResult:
-                        if res[5] ==  "AUDIT_CHANGE_GROUP" or res[5] == "FAILED_LOGIN_GROUP" or res[5] == "SUCCESSFUL_LOGIN_GROUP":
+                        if res[5] == row[6] or res[5] == row[7] or res[5] == row[8]:
                             count +=1
 
                     if count == 3:
                         flag = 1
 
-                    rows.append((row[0], row[1], flag, row[1],))
+                    rows.append((row[1], row[2], flag, row[2],))
 
-                elif (row[7] == "5"):
+                elif (row[4] == "5"):
                     print("type 5")
                     flag = 0
                     try:
-                        cur.execute(row[2])
+                        cur.execute(row[3])
                         QueryResult = cur.fetchall()
 
                     except pyodbc.Error as e:
                         print ("EEEEEEEEEEERRRRRRRRRRRR")
 
                     if QueryResult:
-                        if ((row[5]) != QueryResult[0][0]):
-                            print(row[5] , QueryResult[0][0])
+                        if ((row[6]) != QueryResult[0][0]):
+                            print(row[6] , QueryResult[0][0])
                             flag = 1
-                    rows.append((row[0], row[1], flag, row[1], ))
+                    rows.append((row[1], row[2], flag, row[2], ))
 
-                elif (row[7] == "6"):
+                elif (row[4] == "6"):
                     print("type 6")
                     flag = 1
 
                     try:
-                        cur.execute(row[2])
+                        cur.execute(row[3])
                         QueryResult = cur.fetchall()
 
                     except pyodbc.Error as e:
@@ -163,13 +175,12 @@ class Benchmarks:
 
                     if QueryResult:
                         for res in QueryResult:
-                            if res[1] != row[5]:
+                            if res[1] != row[6]:
                                 flag = 0
 
-                    rows.append((row[0], row[1], flag, row[1],))
+                    rows.append((row[1], row[2], flag, row[2],))
 
 
-        print(rows)
 
         # cur = self.cnxn.cursor()
         # cur.execute("SELECT * FROM sys.servers")
@@ -178,15 +189,33 @@ class Benchmarks:
         #cur.close()
         return rows
 
-    def executeQueries(self , remedition):
+    def runRemediation(self, remedition,replaceName ):
         rows = []
-        print("##########", remedition)
-        cur = self.connectionstring.cursor()
-        cur.execute(remedition)
-        print("##########", cur.messages)
-        result = cur.messages
-        cur.commit()
-        cur.close()
+        result = []
+        if (self.data_list[remedition][9] == "0"):
+            return 0;
+
+        print("##########", self.data_list[remedition][9])
+
+        if(self.data_list[remedition][9]=="1"):
+            for i in range(0,int(self.data_list[remedition][10])) :
+                cur = self.connectionstring.cursor()
+                cur.execute(self.data_list[remedition][12+i])
+                print("###############",i ,int(self.data_list[remedition][10]) ,cur.messages)
+                result = result + cur.messages
+                self.connectionstring.commit()
+                cur.commit()
+
+        if (self.data_list[remedition][9]=="2"):
+            for i in range(0,int(self.data_list[remedition][10])) :
+                cur = self.connectionstring.cursor()
+                print("ee###4oirijowrj'32843q4'n ewf#1025468#####", self.data_list[remedition][11])
+                tsql = self.data_list[remedition][12+i].replace(self.data_list[remedition][11] , replaceName.get())
+                print("ee###4oirijowrj'32843q4'n ewf#1025468#####", tsql)
+                cur.execute(tsql)
+                print("ee####1025468#####", tsql,cur.messages)
+                result = result + cur.messages
+                self.connectionstring.commit()
+                cur.commit()
+
         return result
-
-

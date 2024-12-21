@@ -32,6 +32,7 @@ class AdminControls:
         self.uName = StringVar()
         self.pw = StringVar()
         self.database = StringVar()
+        self.replaceName= StringVar()
         self.cnxn = cnxn
 
 
@@ -41,7 +42,7 @@ class AdminControls:
         self.benchmark = Benchmarks(cnxn)
         self.tableOutputFrame()
         self.adminControlsFrame(cnxn)
-        self.adminFrameButtons()
+
 
 
 
@@ -53,10 +54,9 @@ class AdminControls:
         return value.decode('utf-16le')
     def adminControlsFrame(self, cnxn):
         # Admin Control Frame Configurations
-        res = self.benchmark.get_databases()
 
         self.entriesFrame = Frame(self.root)
-        self.entriesFrame.pack(side=TOP, fill=X)
+        self.entriesFrame.place(x=0, y=420, width=1400, height=520)
         self.admin_frame_title = Label(self.entriesFrame, text="Description", font=("Goudy old style", 20))
         self.admin_frame_title.grid(row=0, column=0, padx=0, pady=0, sticky="w")
 
@@ -69,16 +69,6 @@ class AdminControls:
         self.txtName.grid(row=1, column=0, padx=10, pady=5 ,sticky=W + N + S + E)
 
         # Instructor Gender
-        self.LabelDatabase = Label(self.entriesFrame, text="database", font=("Times New Roman", 16, "bold"))
-        self.LabelDatabase.place(x= 850 , y = 10)
-
-
-        self.databases_combo = boot.Combobox(self.entriesFrame, textvariable=self.database, font=("Times New Roman", 15), width=28, state="readonly")
-        self.databases_combo['values'] = res
-        self.databases_combo.bind("<<ComboboxSelected>>",lambda event, entry=self.databases_combo: self.benchmark.buildCNXN(entry.get()))
-        self.databases_combo.place(x= 850 , y = 40)
-
-
         self.labelAvail = Label(self.entriesFrame, text="Remediation", font=("Times New Roman", 16, "bold"))
         self.labelAvail.place(x= 850 , y = 80)
         self.comboAvail = st.ScrolledText(self.entriesFrame,  font=("Times New Roman", 16), width=40 , height=7 , relief=GROOVE , wrap= tkinter.WORD)
@@ -92,8 +82,10 @@ class AdminControls:
             self.chosenRow = self.selectedData["values"]
             self.insName.set(self.chosenRow[1])
             self.txtName.delete('1.0', END)
-
             self.txtName.set_html(self.chosenRow[3])
+            self.comboAvail.delete('1.0', END)
+            self.comboAvail.insert(INSERT,self.chosenRow[5])
+
             self.insGender.set(self.chosenRow[2])
             self.danceStyles.set(self.chosenRow[3])
             self.insTelNo.set(self.chosenRow[4])
@@ -138,30 +130,13 @@ class AdminControls:
         self.viewIndex()
 
 
-    def assignInstructor(self):
-        if self.txtName.get() == "" or self.txtTelNo.get() == "" or self.comboAvail.get() == "" or self.comboStyle.get() == "" or self.txthrRate.get() == "" or self.comboGender.get() == "" or self.txtUsername.get() == "" or self.txtPassword.get() == "":
-            messagebox.showerror("Error!", "Choose an Instructor to Update Details!")
-            return
-
-
-        self.tempAvailDays = ', '.join(self.getAvailableDays())  # converting the list of Days into a string
-
-        try:
-            db.editInstructor(self.chosenRow[0], self.txtName.get(), self.comboGender.get(), self.comboStyle.get(),
-                              self.txtTelNo.get(),
-                              self.txthrRate.get(), self.comboAvail.get(), self.tempAvailDays,
-                              self.txtUsername.get(), self.txtPassword.get())
-            messagebox.showinfo("Success!", "Record Successfully Updated!")
-            self.resetForm()
-            self.viewIndex()
-        except AttributeError as error:
-            messagebox.showerror("Error!", "Choose an existing Instructor to Update Details")
-
-
     def runRemediation(self):
         try:
-            print("1111111111" , self.chosenRow[4])
-            self.benchmark.executeQueries(self.chosenRow[4])
+            print("1111111111" , self.chosenRow[0])
+            print("@@@@@@@@@@@@@@",self.chosenRow[4])
+            result = self.benchmark.runRemediation(self.chosenRow[4] , self.replaceName)
+            if (result == 0):
+                messagebox.showerror("warning!","manual rem")
 
         except AttributeError as error:
             messagebox.showerror("Error!", "Please Choose a Row")
@@ -207,46 +182,14 @@ class AdminControls:
         self.buttonsFrame = Frame(self.entriesFrame)
         self.buttonsFrame.grid(row=10, column=0, padx=10, pady=10, sticky="w", columnspan=8)
 
-
-        # self.btnAdd = Button(self.buttonsFrame, command=self.addInstructor, text="Add", bd=0, cursor="hand2",
-        #                      bg="#EADDF7",
-        #                      fg="#110a4d", width=20, font=("Impact", 15))
-        # self.btnAdd.grid(row=0, column=0, padx=10)
-
-
-        # self.btnUpdate = Button(self.buttonsFrame, command=self.assignInstructor, text="Update Instructor", bd=0,
-        #                         cursor="hand2",
-        #                         bg="#EADDF7",
-        #                         fg="#110a4d", width=20, font=("Impact", 15))
-        # self.btnUpdate.grid(row=0, column=1, padx=10)
-
-
-        self.btnDlt = Button(self.buttonsFrame, command=self.runRemediation, text="Run Remediation ",
-                             cursor="hand2",
-
-                             width=20)
+        self.btnDlt = Button(self.buttonsFrame, command=self.runRemediation, text="Run Remediation ",cursor="hand2", width=20)
         self.btnDlt.grid(row=0, column=2, padx=10)
 
-        # Reset Widget Inputs
-        # self.btnReset = Button(self.buttonsFrame, command=self.resetForm, text="Reset Form", bd=0, cursor="hand2",
-        #                        bg="#EADDF7", fg="#110a4d", width=20, font=("Impact", 15))
-        # self.btnReset.grid(row=0, column=3, padx=10)
-
         # Display List
-        self.btnView = Button(self.buttonsFrame, command=self.viewIndex, text="View List",
-                              cursor="hand2",
-                               width=20)
-        self.btnView.grid(row=0, column=4, padx=10)
-
-        # Manage Sessions
-        # self.btnManageSess = Button(self.buttonsFrame, command=self.manageSessions, text="Manage Sessions", bd=0,
-        #                             cursor="hand2",
-        #                             bg="#EADDF7", fg="#110a4d", width=20, font=("Impact", 15))
-        # self.btnManageSess.grid(row=0, column=5, padx=10)
+        self.btnView = Button(self.buttonsFrame, command=self.viewIndex, text="View List",cursor="hand2", width=20)
 
         # LogOut
-        self.btnLogOut = Button(self.buttonsFrame, command=self.logOut, text="Log Out", cursor="hand2",
-                                 width=15)
+        self.btnLogOut = Button(self.buttonsFrame, command=self.logOut, text="Log Out", cursor="hand2", width=15)
         self.btnLogOut.grid(row=0, column=6, padx=15, sticky="e")
 
     """Table Frame using TreeView"""
@@ -259,7 +202,7 @@ class AdminControls:
     def tableOutputFrame(self):
         # Treeview Frame Configurations
         self.tableFrame = Frame(self.root)
-        self.tableFrame.place(x=0, y=420, width=1400, height=520)
+        self.tableFrame.place(x=0, y=0, width=1400, height=520)
         self.yScroll = Scrollbar(self.tableFrame)
         self.yScroll.pack(side=RIGHT, fill=Y)
 
@@ -275,17 +218,15 @@ class AdminControls:
         self.out.tag_configure('1', background='lightgreen')
         self.out.tag_configure('0', background='pink')
 
-
-
         #self.out.bind("<<TreeviewSelect>>", self.print_element)
 
 
         self.out.heading("1", text="Index")
         self.out.column("1",anchor=CENTER, stretch=NO, width=100)
         self.out.heading("2", text="Name")
-        self.out.column("2",anchor=CENTER, stretch=NO, width=830)
+        self.out.column("2",anchor=CENTER, stretch=NO, width=700)
         self.out.heading("3", text="result")
-        self.out.column("3", anchor=CENTER, stretch=NO,width=230)
+        self.out.column("3", anchor=CENTER, stretch=NO,width=100)
 
         self.out['show'] = 'headings'
 
@@ -294,5 +235,31 @@ class AdminControls:
         # self.comboAvail.bind("<<ComboboxSelected>>", self.selectDays)
 
         # TreeView output layout configurations
-        self.out.place(relx=0.01, rely=0.01,width=1000 , height=500)
+        self.out.place(relx=0.3, rely=0.01,width=950 , height=400)
         self.yScroll.config(command=self.out.yview)
+
+        self.LabelDatabase = Label(self.tableFrame, text="database", font=("Times New Roman", 16, "bold"))
+        self.LabelDatabase.place(relx=0.01 , rely= 0.03)
+
+        res = self.benchmark.get_databases()
+        self.databases_combo = boot.Combobox(self.tableFrame, textvariable=self.database, font=("Times New Roman", 15), width=28, state="readonly")
+        self.databases_combo['values'] = res
+        self.databases_combo.bind("<<ComboboxSelected>>",lambda event, entry=self.databases_combo: self.benchmark.buildCNXN(entry.get()))
+        self.databases_combo.place(relx=0.01 , rely= 0.1)
+
+        self.replaceName_lable = Label(self.tableFrame, text="variable name", font=("Times New Roman", 16, "bold"))
+        self.replaceName_lable.place(relx=0.01, rely= 0.23)
+        self.replaceName_entry = tk.Entry(self.tableFrame, textvariable=self.replaceName, font=("Times New Roman", 15),
+                                          width=30)
+        self.replaceName_entry.place(relx=0.01, rely= 0.3)
+
+        self.btnView = Button(self.tableFrame, command=self.viewIndex, text="View List", cursor="hand2", width=30)
+        self.btnView.place(relx=0.01 , rely= 0.4)
+
+        self.btnDlt = Button(self.tableFrame, command=self.runRemediation, text="Run Remediation ", cursor="hand2",width=30)
+        self.btnDlt.place(relx= 0.01, rely= 0.5)
+
+        self.btnLogOut = Button(self.tableFrame, command=self.logOut, text="Log Out", cursor="hand2", width=30)
+        self.btnLogOut.place(relx= 0.01, rely= 0.6)
+
+
