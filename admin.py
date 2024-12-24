@@ -12,11 +12,7 @@ from tkhtmlview import HTMLScrolledText
 import ttkbootstrap as boot
 
 
-import pyodbc
-
 # creating a database object
-
-db = Database("mainDatabase.db")
 
 class AdminControls:
     def __init__(self, root, cnxn):
@@ -43,9 +39,6 @@ class AdminControls:
         self.tableOutputFrame()
         self.adminControlsFrame(cnxn)
 
-
-
-
     """Instructor Info Entries Frame"""
 
 
@@ -56,23 +49,17 @@ class AdminControls:
         # Admin Control Frame Configurations
 
         self.entriesFrame = Frame(self.root)
-        self.entriesFrame.place(x=0, y=420, width=1400, height=520)
-        self.admin_frame_title = Label(self.entriesFrame, text="Description", font=("Goudy old style", 20))
-        self.admin_frame_title.grid(row=0, column=0, padx=0, pady=0, sticky="w")
+        self.entriesFrame.place(x=0, y=480, width=1400, height=500)
+        self.Description_title = Label(self.entriesFrame, text="Description", font=("Goudy old style", 20))
+        self.Description_title.place(x= 600, y = 10)
 
-        # Instructor Name
-        # self.labelName = Label(self.entriesFrame, text="Description", font=("Times New Roman", 16, "bold"), bg="#110a4d",fg="white")
-        # self.labelName.grid(row=1, column=0, padx=10, pady=5, sticky="w")
-        #self.txtName = st.ScrolledText(self.entriesFrame,  font=("Times New Roman", 16), width=40 , height=7 , relief=GROOVE , wrap= tkinter.WORD)
-        self.txtName = HTMLScrolledText(self.entriesFrame  , html= '<html></html>' , height= 21 , width=100)
-        #self.txtName.place(x=40, y=100, width=180, height=60)
-        self.txtName.grid(row=1, column=0, padx=10, pady=5 ,sticky=W + N + S + E)
+        self.description = HTMLScrolledText(self.entriesFrame, html='<html></html>', height= 25, width=120)
+        self.description.place(x= 600, y = 50)
 
-        # Instructor Gender
-        self.labelAvail = Label(self.entriesFrame, text="Remediation", font=("Times New Roman", 16, "bold"))
-        self.labelAvail.place(x= 850 , y = 80)
-        self.comboAvail = st.ScrolledText(self.entriesFrame,  font=("Times New Roman", 16), width=40 , height=7 , relief=GROOVE , wrap= tkinter.WORD)
-        self.comboAvail.grid(row=1, column=1, padx=10, pady=5, sticky="w")
+        self.labelAvail = Label(self.entriesFrame, text="Remediation Result", font=("Goudy old style", 20))
+        self.labelAvail.place(x= 10 , y = 10)
+        self.remediation = st.ScrolledText(self.entriesFrame, font=("Times New Roman", 14), width=60, height=9, relief=GROOVE, wrap= tkinter.WORD)
+        self.remediation.place(x= 10, y = 50)
 
 
     def getData(self, event):
@@ -81,11 +68,10 @@ class AdminControls:
             self.selectedData = self.out.item(self.selectedRow)
             self.chosenRow = self.selectedData["values"]
             self.insName.set(self.chosenRow[1])
-            self.txtName.delete('1.0', END)
-            self.txtName.set_html(self.chosenRow[3])
-            self.comboAvail.delete('1.0', END)
-            self.comboAvail.insert(INSERT,self.chosenRow[5])
-
+            self.description.delete('1.0', END)
+            self.description.set_html(self.chosenRow[3])
+            self.remediation.delete('1.0', END)
+            self.remediation.insert(INSERT, self.chosenRow[5])
             self.insGender.set(self.chosenRow[2])
             self.danceStyles.set(self.chosenRow[3])
             self.insTelNo.set(self.chosenRow[4])
@@ -99,7 +85,7 @@ class AdminControls:
 
 
     def selectDays(self, event):
-        if self.comboAvail.get() == "NOT AVAILABLE":
+        if self.remediation.get() == "NOT AVAILABLE":
             self.listDays.delete(0, END)
         else:
             self.listDays.delete(0, END)  # clearing existing entries before inserting
@@ -113,22 +99,6 @@ class AdminControls:
             self.availDays.append(str(self.listDays.get(day)))
         return self.availDays
 
-    """CTA Methods"""
-
-    def addInstructor(self):
-        if self.txtName.get() == "" or self.txtTelNo.get() == "" or self.comboAvail.get() == "" or self.comboStyle.get() == "" or self.txthrRate.get() == "" or self.comboGender.get() == "" or self.txtUsername.get() == "" or self.txtPassword.get() == "":
-            messagebox.showerror("Error!", "Please fill all the fields!")
-            return
-
-        self.tempAvailDays = ', '.join(self.getAvailableDays())  # converting the list of Days into a string
-
-        db.insertInstructor(self.txtName.get(), self.comboGender.get(), self.comboStyle.get(), self.txtTelNo.get(),
-                            self.txthrRate.get(), self.comboAvail.get(), self.tempAvailDays,
-                            self.txtUsername.get(), self.txtPassword.get())
-        messagebox.showinfo("Success!", "Record Successfully Insertered!")
-        self.resetForm()
-        self.viewIndex()
-
 
     def runRemediation(self):
         try:
@@ -137,6 +107,10 @@ class AdminControls:
             result = self.benchmark.runRemediation(self.chosenRow[4] , self.replaceName)
             if (result == 0):
                 messagebox.showerror("warning!","manual rem")
+            else:
+                print("$1231412413!@#$%^", result , type(result))
+                self.remediation.delete('1.0', END)
+                self.remediation.insert(INSERT, result)
 
         except AttributeError as error:
             messagebox.showerror("Error!", "Please Choose a Row")
@@ -202,7 +176,7 @@ class AdminControls:
     def tableOutputFrame(self):
         # Treeview Frame Configurations
         self.tableFrame = Frame(self.root)
-        self.tableFrame.place(x=0, y=0, width=1400, height=520)
+        self.tableFrame.place(x=0, y=0, width=1400, height=550)
         self.yScroll = Scrollbar(self.tableFrame)
         self.yScroll.pack(side=RIGHT, fill=Y)
 
@@ -210,7 +184,7 @@ class AdminControls:
         self.style = boot.Style()
         self.style.configure("mystyle.Treeview", font=('Calibri', 12),
                              rowheight=50)
-        self.style.configure("mystyle.Treeview.Heading", font=('Times New Roman', 14, "bold"), sticky="w")
+        self.style.configure("mystyle.Treeview.Heading", font=("Goudy old style", 14), sticky="w")
 
         # Formatting the output table view
         self.out = boot.Treeview(self.tableFrame, yscrollcommand=self.yScroll.set,
@@ -235,10 +209,13 @@ class AdminControls:
         # self.comboAvail.bind("<<ComboboxSelected>>", self.selectDays)
 
         # TreeView output layout configurations
-        self.out.place(relx=0.3, rely=0.01,width=950 , height=400)
+        self.out.place(relx=0.3, rely=0.1,width=950 , height=400)
         self.yScroll.config(command=self.out.yview)
 
-        self.LabelDatabase = Label(self.tableFrame, text="database", font=("Times New Roman", 16, "bold"))
+        self.LabelDatabase = Label(self.tableFrame, text="List of Recommendations", font=("Goudy old style", 20))
+        self.LabelDatabase.place(relx=0.3, rely=0.01)
+
+        self.LabelDatabase = Label(self.tableFrame, text="database", font=("Goudy old style", 20))
         self.LabelDatabase.place(relx=0.01 , rely= 0.03)
 
         res = self.benchmark.get_databases()
@@ -247,7 +224,7 @@ class AdminControls:
         self.databases_combo.bind("<<ComboboxSelected>>",lambda event, entry=self.databases_combo: self.benchmark.buildCNXN(entry.get()))
         self.databases_combo.place(relx=0.01 , rely= 0.1)
 
-        self.replaceName_lable = Label(self.tableFrame, text="variable name", font=("Times New Roman", 16, "bold"))
+        self.replaceName_lable = Label(self.tableFrame, text="variable name", font=("Goudy old style", 20))
         self.replaceName_lable.place(relx=0.01, rely= 0.23)
         self.replaceName_entry = tk.Entry(self.tableFrame, textvariable=self.replaceName, font=("Times New Roman", 15),
                                           width=30)

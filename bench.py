@@ -77,7 +77,7 @@ class Benchmarks:
                 print(row[0] , row[7])
                 QueryResult = []
                 if (row[4] == "0"):  #manual
-                    rows.append((row[1], row[2], "manual", row[2], row[0] )) #index , dsc , result , dsc
+                    rows.append((row[1], row[15], "manual", row[2], row[0] )) #index , dsc , result , dsc
                 elif (row[4] == "1"):  # type one
                     print("%%%%%%%" , row[5])
                     print((row[3]))
@@ -99,7 +99,7 @@ class Benchmarks:
                     #print("expected:", int(row[3]) == QueryResult[0][1], "result:", QueryResult[0][1])
 
 
-                        rows.append((row[1] ,QueryResult[0][0]  , flag , row[2], row[0] ))  #index , queryname , result , dsc
+                        rows.append((row[1] ,row[15]  , flag , row[2], row[0] ))  #index , queryname , result , dsc
 
                 elif (row[4] == "2"):
                     print("type 2")
@@ -112,7 +112,7 @@ class Benchmarks:
                         print ("EEEEEEEEEEEEERRRRRRRRR")
                     if QueryResult:
                         flag = 0
-                    rows.append((row[1], row[2], flag, row[2],row[0],QueryResult))
+                    rows.append((row[1], row[15], flag, row[2],row[0],QueryResult))
 
                 elif (row[4] == "3"):
                     print("type 3")
@@ -122,13 +122,16 @@ class Benchmarks:
                         QueryResult = cur.fetchall()
 
                     except pyodbc.Error as e:
-                        print (int(row[6]) , QueryResult[0][0])
+                        print ( cur.messages,QueryResult)
+
 
                     if QueryResult:
                         if (int(row[6]) <= QueryResult[0][0]):
                             print(row[6] , QueryResult[0][0])
                             flag = 1
-                    rows.append((row[1], row[2], flag, row[2],row[0] ))
+                    else:
+                        QueryResult = cur.messages
+                    rows.append((row[1], row[15], flag, row[2],row[0],QueryResult ))
 
                 elif(row[4] == "4"):
                     print("type 4")
@@ -144,7 +147,7 @@ class Benchmarks:
                     if count == 3:
                         flag = 1
 
-                    rows.append((row[1], row[2], flag, row[2],))
+                    rows.append((row[1], row[15], flag, row[2],row[0],QueryResult))
 
                 elif (row[4] == "5"):
                     print("type 5")
@@ -160,7 +163,7 @@ class Benchmarks:
                         if ((row[6]) != QueryResult[0][0]):
                             print(row[6] , QueryResult[0][0])
                             flag = 1
-                    rows.append((row[1], row[2], flag, row[2], ))
+                    rows.append((row[1], row[15], flag, row[2],row[0],QueryResult ))
 
                 elif (row[4] == "6"):
                     print("type 6")
@@ -178,7 +181,7 @@ class Benchmarks:
                             if res[1] != row[6]:
                                 flag = 0
 
-                    rows.append((row[1], row[2], flag, row[2],))
+                    rows.append((row[1], row[15], flag, row[2],))
 
 
 
@@ -200,22 +203,28 @@ class Benchmarks:
         if(self.data_list[remedition][9]=="1"):
             for i in range(0,int(self.data_list[remedition][10])) :
                 cur = self.connectionstring.cursor()
-                cur.execute(self.data_list[remedition][12+i])
-                print("###############",i ,int(self.data_list[remedition][10]) ,cur.messages)
-                result = result + cur.messages
-                self.connectionstring.commit()
-                cur.commit()
+                try:
+                    cur.execute(self.data_list[remedition][12+i])
+                    print("###############",i ,int(self.data_list[remedition][10]) ,cur.messages)
+                    result = result + cur.messages
+                    self.connectionstring.commit()
+                    cur.commit()
+                except pyodbc.Error as e:
+                    result.append(e.args[1])
 
         if (self.data_list[remedition][9]=="2"):
             for i in range(0,int(self.data_list[remedition][10])) :
                 cur = self.connectionstring.cursor()
-                print("ee###4oirijowrj'32843q4'n ewf#1025468#####", self.data_list[remedition][11])
-                tsql = self.data_list[remedition][12+i].replace(self.data_list[remedition][11] , replaceName.get())
-                print("ee###4oirijowrj'32843q4'n ewf#1025468#####", tsql)
-                cur.execute(tsql)
-                print("ee####1025468#####", tsql,cur.messages)
-                result = result + cur.messages
-                self.connectionstring.commit()
-                cur.commit()
+                try:
+                    tsql = self.data_list[remedition][12+i].replace(self.data_list[remedition][11] , replaceName.get())
+                    cur.execute(tsql)
+                    print("ee####1025468#####", tsql,cur.messages)
+                    result = result + cur.messages
+                    self.connectionstring.commit()
+                    cur.commit()
+                except pyodbc.Error as e:
+                    result.append(e.args[1])
+                    print(result)
+
 
         return result
