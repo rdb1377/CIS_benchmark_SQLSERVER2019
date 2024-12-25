@@ -15,98 +15,56 @@ import ttkbootstrap as boot
 # creating a database object
 
 class AdminControls:
-    def __init__(self, root, cnxn):
+    def __init__(self, root, connectionString):
+
         self.root = root
-
-        # local variables
-        self.insName = StringVar()
-        self.insGender = StringVar()
-        self.danceStyles = StringVar()
-        self.insTelNo = StringVar()
-        self.hrRate = DoubleVar()
-        self.avail = StringVar()
-        self.uName = StringVar()
-        self.pw = StringVar()
         self.database = StringVar()
-        self.replaceName= StringVar()
-        self.cnxn = cnxn
+        self.replaceName = StringVar()
+        self.remediation_label = None
+        self.description = None
+        self.dsc_label = None
+        self.entriesFrame = None
+        self.remediation = None
+        self.selectedRow = None
+        self.connectionString = connectionString
+        self.benchmark = Benchmarks(connectionString)
 
-
-
-        # Call the tkinter frames to the window
-
-        self.benchmark = Benchmarks(cnxn)
         self.tableOutputFrame()
-        self.adminControlsFrame(cnxn)
+        self.adminControlsFrame()
 
-    """Instructor Info Entries Frame"""
-
-
-    def handle_sql_variant_as_string(value):
-        print(value)
-        return value.decode('utf-16le')
-    def adminControlsFrame(self, cnxn):
-        # Admin Control Frame Configurations
-
+    def adminControlsFrame(self):
         self.entriesFrame = Frame(self.root)
         self.entriesFrame.place(x=0, y=480, width=1400, height=500)
-        self.Description_title = Label(self.entriesFrame, text="Description", font=("Goudy old style", 20))
-        self.Description_title.place(x= 600, y = 10)
+
+        self.dsc_label = Label(self.entriesFrame, text="Description", font=("Goudy old style", 20))
+        self.dsc_label.place(x=600, y=10)
 
         self.description = HTMLScrolledText(self.entriesFrame, html='<html></html>', height= 25, width=120)
-        self.description.place(x= 600, y = 50)
+        self.description.place(x=600, y=50)
 
-        self.labelAvail = Label(self.entriesFrame, text="Remediation Result", font=("Goudy old style", 20))
-        self.labelAvail.place(x= 10 , y = 10)
+        self.remediation_label = Label(self.entriesFrame, text="Remediation Result", font=("Goudy old style", 20))
+        self.remediation_label.place(x=10, y=10)
+
         self.remediation = st.ScrolledText(self.entriesFrame, font=("Times New Roman", 14), width=60, height=9, relief=GROOVE, wrap= tkinter.WORD)
-        self.remediation.place(x= 10, y = 50)
-
+        self.remediation.place(x=10, y=50)
 
     def getData(self, event):
         try:
             self.selectedRow = self.out.focus()
             self.selectedData = self.out.item(self.selectedRow)
             self.chosenRow = self.selectedData["values"]
-            self.insName.set(self.chosenRow[1])
             self.description.delete('1.0', END)
             self.description.set_html(self.chosenRow[3])
             self.remediation.delete('1.0', END)
             self.remediation.insert(INSERT, self.chosenRow[5])
-            self.insGender.set(self.chosenRow[2])
-            self.danceStyles.set(self.chosenRow[3])
-            self.insTelNo.set(self.chosenRow[4])
-            self.hrRate.set(self.chosenRow[5])
-            self.avail.set(self.chosenRow[6])
-            self.selectDays(event)
-            self.uName.set(self.chosenRow[8])
-            self.pw.set(self.chosenRow[9])
         except IndexError as error:
             pass
 
-
-    def selectDays(self, event):
-        if self.remediation.get() == "NOT AVAILABLE":
-            self.listDays.delete(0, END)
-        else:
-            self.listDays.delete(0, END)  # clearing existing entries before inserting
-            for day in self.weekdays:
-                self.listDays.insert(END, day)
-
-    def getAvailableDays(self):
-        self.availDays = []
-        for day in self.listDays.curselection():
-            # creating a string list from the chosen list indexes
-            self.availDays.append(str(self.listDays.get(day)))
-        return self.availDays
-
-
     def runRemediation(self):
         try:
-            print("1111111111" , self.chosenRow[0])
-            print("@@@@@@@@@@@@@@",self.chosenRow[4])
-            result = self.benchmark.runRemediation(self.chosenRow[4] , self.replaceName)
-            if (result == 0):
-                messagebox.showerror("warning!","manual rem")
+            result = self.benchmark.runRemediation(self.chosenRow[4], self.replaceName)
+            if result == 0:
+                messagebox.showerror("warning!","This recommendation has a manual remediation")
             else:
                 print("$1231412413!@#$%^", result , type(result))
                 self.remediation.delete('1.0', END)
@@ -115,32 +73,18 @@ class AdminControls:
         except AttributeError as error:
             messagebox.showerror("Error!", "Please Choose a Row")
 
-
-
-    # Method to display all instructors in the Treeview Frame
     def viewIndex(self):
-        self.out.delete(*self.out.get_children())  # emptying the table before reloading
+        self.out.delete(*self.out.get_children())  # fill the table with benchmark results
         for row in self.benchmark.view():
-            self.out.insert("", END, values=row, tags=row[2] )
+            self.out.insert("", END, values=row, tags=row[2])
 
     # Method to direct to the next Frame to Assign Instructors
     def manageSessions(self):
         self.entriesFrame.destroy()
         self.buttonsFrame.destroy()
         self.tableFrame.destroy()
-        sessions.AssignSession(self.root , self.cnxn)
+        sessions.AssignSession(self.root, self.connectionString)
 
-    # Method to reset all input widgets in the frame
-    def resetForm(self):
-        self.insName.set("")
-        self.insGender.set("")
-        self.danceStyles.set("")
-        self.insTelNo.set("")
-        self.hrRate.set("")
-        self.avail.set("")
-        self.listDays.delete(0, END)
-        self.uName.set("")
-        self.pw.set("")
 
     # Method to redirect to the login frame
     def logOut(self):

@@ -63,7 +63,6 @@ class Benchmarks:
         return list(zip(*res))[0]
 
     def handle_sql_variant_as_string(value):
-
             return value.decode('utf-16le')
 
     def view(self):
