@@ -1,5 +1,6 @@
 import csv
 import pyodbc
+import pandas
 
 
 class Benchmarks:
@@ -8,36 +9,14 @@ class Benchmarks:
         self.csvreader = []
         self.data_list = []
         with open("book1.csv", 'r' ) as file:
-
             self.data_list = list(csv.reader(file , delimiter= ','))
 
-        if self.cnxn.authmethod == 'Windows Authetication':
-            # self.connectionstring = pyodbc.connect(
-            #     'DRIVER={' + self.cnxn.driver + '};SERVER=' + self.cnxn.servername +  ';Trusted_Connection={yes} ;TrustServerCertificate={yes};  NeedODBCTypesOnly=1')
+        self.connectionstring = self.buildCNXN('')
 
-            self.connectionstring = pyodbc.connect("Driver={" + self.cnxn.driver + "};"
-                      "Server="+ self.cnxn.servername +";"
-                      "Database=master;"
-                      "Trusted_Connection=yes;"
-                      "TrustServerCertificate=yes;"
-                      "NeedODBCTypesOnly=1"
-                      ";autocommit=True")
-
-            # self.connectionstring = pyodbc.connect("Driver={ODBC Driver 17 for SQL Server};"
-            #           "Server=localhost;"
-            #           "Database=bon;"
-            #           "Trusted_Connection=yes;")
-
-
-        elif self.cnxn.authmethod == 'SQL Server Authetication':
-
-            self.connectionstring = pyodbc.connect(
-                'DRIVER={' + self.cnxn.driver + '};SERVER=' + self.cnxn.servername +  ';Database = {master} ;UID=' + self.cnxn.username + ';PWD=' + self.cnxn.password )
 
     def buildCNXN(self , database):
         if (database =='') :
             database = 'master'
-        print("AAAAAAAAAAAAAAAAAAA")
         if self.cnxn.authmethod== 'Windows Authetication':
             connectionstring = pyodbc.connect("Driver={" + self.cnxn.driver + "};"
                               "Server=" + self.cnxn.servername + ";"
@@ -49,7 +28,7 @@ class Benchmarks:
                               )
 
         elif self.cnxn.authmethod == 'SQL Server Authetication':
-            connectionstring = pyodbc.connect('DRIVER={' + self.cnxn.driver + '};SERVER=' + self.cnxn.servername + ';Database ='+ database+ ';UID=' + self.cnxn.username + ';PWD=' + self.cnxn.password )
+            connectionstring = pyodbc.connect('DRIVER={' + self.cnxn.driver + '};SERVER=' + self.cnxn.servername + ';Database ='+ database+ ';UID=' + self.cnxn.username + ';PWD=' + self.cnxn.password ,autocommit=True )
         self.connectionstring = connectionstring
         print(database , self.connectionstring)
         return connectionstring
@@ -65,7 +44,7 @@ class Benchmarks:
     def handle_sql_variant_as_string(value):
             return value.decode('utf-16le')
 
-    def view(self):
+    def runAudit(self):
         rows = []
         cur = self.connectionstring.cursor()
         with open("book1.csv", 'r' ) as file:
@@ -75,15 +54,59 @@ class Benchmarks:
             for row in self.csvreader:
                 print(row[0] , row[7])
                 QueryResult = []
+                result = []
                 if (row[4] == "0"):  #manual
-                    rows.append((row[1], row[15], "manual", row[2], row[0] )) #index , dsc , result , dsc
+                    rows.append([row[1], row[15], "MANUAL", row[2], row[0] ]) #index , dsc , result , dsc
                 elif (row[4] == "1"):  # type one
                     print("%%%%%%%" , row[5])
                     print((row[3]))
                     try:
                         cur.execute(row[3])
                         QueryResult = cur.fetchall()
-                        print(cur.messages)
+                        print("despripppppppppp", cur.description)
+
+                        widths = []
+                        columns = []
+                        tavnit = '|'
+                        separator = '+'
+
+                        for i in range(len(cur.description)):
+                            print("&&j",cur.description[i])
+                            widths.append(max(len(cur.description[i][0]) , len(str(QueryResult[0][i]))))
+                            columns.append(cur.description[i][0])
+
+                        for w in widths:
+                            tavnit += " %-" + "%ss |" % (w,)
+                            separator += '-' * w + '--+'
+
+                        print(separator)
+                        result += separator
+                        result += '\n'
+                        print(tavnit % tuple(columns))
+                        result += tavnit % tuple(columns)
+                        result += '\n'
+                        print(separator)
+                        result += separator
+                        result += '\n'
+                        for ro in QueryResult:
+                            print(tavnit % tuple(ro))
+                            result += tavnit % tuple(ro)
+                            result += '\n'
+                        print(separator)
+                        result += separator
+                        result += '\n'
+                        res = ''
+
+                        for i in result:
+                            res += str(i)
+
+                        print(res)
+                        j= 0
+                        for i in range(len(result)):
+                            if result[i] =='\n':
+                                print(result[j:i])
+                            j = i
+
                         flag= 1
                     except pyodbc.Error as e:
                         print ("EEEEEEEEEEEEERRRRRRRRR")
@@ -98,7 +121,7 @@ class Benchmarks:
                     #print("expected:", int(row[3]) == QueryResult[0][1], "result:", QueryResult[0][1])
 
 
-                        rows.append((row[1] ,row[15]  , flag , row[2], row[0] ))  #index , queryname , result , dsc
+                        rows.append([row[1] ,row[15]  , flag , row[2], row[0] , res ])  #index , queryname , result , dsc
 
                 elif (row[4] == "2"):
                     print("type 2")
@@ -111,7 +134,7 @@ class Benchmarks:
                         print ("EEEEEEEEEEEEERRRRRRRRR")
                     if QueryResult:
                         flag = 0
-                    rows.append((row[1], row[15], flag, row[2],row[0],QueryResult))
+                    rows.append([row[1], row[15], flag, row[2],row[0],QueryResult])
 
                 elif (row[4] == "3"):
                     print("type 3")
@@ -130,7 +153,7 @@ class Benchmarks:
                             flag = 1
                     else:
                         QueryResult = cur.messages
-                    rows.append((row[1], row[15], flag, row[2],row[0],QueryResult ))
+                    rows.append([row[1], row[15], flag, row[2],row[0],QueryResult ])
 
                 elif(row[4] == "4"):
                     print("type 4")
@@ -146,7 +169,7 @@ class Benchmarks:
                     if count == 3:
                         flag = 1
 
-                    rows.append((row[1], row[15], flag, row[2],row[0],QueryResult))
+                    rows.append([row[1], row[15], flag, row[2],row[0],QueryResult])
 
                 elif (row[4] == "5"):
                     print("type 5")
@@ -162,7 +185,7 @@ class Benchmarks:
                         if ((row[6]) != QueryResult[0][0]):
                             print(row[6] , QueryResult[0][0])
                             flag = 1
-                    rows.append((row[1], row[15], flag, row[2],row[0],QueryResult ))
+                    rows.append([row[1], row[15], flag, row[2],row[0],QueryResult ])
 
                 elif (row[4] == "6"):
                     print("type 6")
@@ -180,7 +203,7 @@ class Benchmarks:
                             if res[1] != row[6]:
                                 flag = 0
 
-                    rows.append((row[1], row[15], flag, row[2],))
+                    rows.append([row[1], row[15], flag, row[2],])
 
 
 
@@ -189,6 +212,11 @@ class Benchmarks:
         # rows = cur.fetchall()
         # print(rows)
         #cur.close()
+        for row in rows:
+            if row[2] == 0:
+                row[2] ='FAIL'
+            elif row[2] == 1:
+                row[2] = 'PASS'
         return rows
 
     def runRemediation(self, remedition,replaceName ):

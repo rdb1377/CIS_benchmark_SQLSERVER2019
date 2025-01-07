@@ -26,6 +26,9 @@ class AdminControls:
         self.entriesFrame = None
         self.remediation = None
         self.selectedRow = None
+        self.btnLogOut = None
+        self.btnDlt = None
+        self.btnView = None
         self.connectionString = connectionString
         self.benchmark = Benchmarks(connectionString)
 
@@ -45,7 +48,7 @@ class AdminControls:
         self.remediation_label = Label(self.entriesFrame, text="Remediation Result", font=("Goudy old style", 20))
         self.remediation_label.place(x=10, y=10)
 
-        self.remediation = st.ScrolledText(self.entriesFrame, font=("Times New Roman", 14), width=60, height=9, relief=GROOVE, wrap= tkinter.WORD)
+        self.remediation = st.ScrolledText(self.entriesFrame, font=("Courier", 9), width=70, height=9, relief=GROOVE, wrap= tkinter.WORD)
         self.remediation.place(x=10, y=50)
 
     def getData(self, event):
@@ -73,23 +76,18 @@ class AdminControls:
         except AttributeError as error:
             messagebox.showerror("Error!", "Please Choose a Row")
 
-    def viewIndex(self):
+    def viewResults(self):
         self.out.delete(*self.out.get_children())  # fill the table with benchmark results
-        for row in self.benchmark.view():
+        for row in self.benchmark.runAudit():
             self.out.insert("", END, values=row, tags=row[2])
 
     # Method to direct to the next Frame to Assign Instructors
-    def manageSessions(self):
-        self.entriesFrame.destroy()
-        self.buttonsFrame.destroy()
-        self.tableFrame.destroy()
-        sessions.AssignSession(self.root, self.connectionString)
 
 
     # Method to redirect to the login frame
     def logOut(self):
         self.entriesFrame.destroy()
-        self.buttonsFrame.destroy()
+        # self.buttonsFrame.destroy()
         self.tableFrame.destroy()
         login.Login(self.root)
 
@@ -104,7 +102,7 @@ class AdminControls:
         self.btnDlt.grid(row=0, column=2, padx=10)
 
         # Display List
-        self.btnView = Button(self.buttonsFrame, command=self.viewIndex, text="View List",cursor="hand2", width=20)
+        self.btnView = Button(self.buttonsFrame, command=self.viewResults, text="View List", cursor="hand2", width=20)
 
         # LogOut
         self.btnLogOut = Button(self.buttonsFrame, command=self.logOut, text="Log Out", cursor="hand2", width=15)
@@ -112,11 +110,7 @@ class AdminControls:
 
     """Table Frame using TreeView"""
 
-    def print_element(event):
-        print("$$$$$$$$$$$$$$$$$$$$$$")
-        tree = event.widget
-        selection = [tree.item(item)["text"] for item in tree.selection()]
-        print("selected items:", selection)
+
     def tableOutputFrame(self):
         # Treeview Frame Configurations
         self.tableFrame = Frame(self.root)
@@ -133,8 +127,9 @@ class AdminControls:
         # Formatting the output table view
         self.out = boot.Treeview(self.tableFrame, yscrollcommand=self.yScroll.set,
                                  columns=(1, 2 ,3), style="mystyle.Treeview")
-        self.out.tag_configure('1', background='lightgreen')
-        self.out.tag_configure('0', background='pink')
+        self.out.tag_configure('PASS', background='lightgreen')
+        self.out.tag_configure('FAIL', background='pink')
+        self.out.tag_configure('MANUAL', background='lightyellow')
 
         #self.out.bind("<<TreeviewSelect>>", self.print_element)
 
@@ -153,7 +148,7 @@ class AdminControls:
         # self.comboAvail.bind("<<ComboboxSelected>>", self.selectDays)
 
         # TreeView output layout configurations
-        self.out.place(relx=0.3, rely=0.1,width=950 , height=400)
+        self.out.place(relx = 0.3,rely=0.1,width=950 , height=400)
         self.yScroll.config(command=self.out.yview)
 
         self.LabelDatabase = Label(self.tableFrame, text="List of Recommendations", font=("Goudy old style", 20))
@@ -174,7 +169,7 @@ class AdminControls:
                                           width=30)
         self.replaceName_entry.place(relx=0.01, rely= 0.3)
 
-        self.btnView = Button(self.tableFrame, command=self.viewIndex, text="View List", cursor="hand2", width=30)
+        self.btnView = Button(self.tableFrame, command=self.viewResults, text="View List", cursor="hand2", width=30)
         self.btnView.place(relx=0.01 , rely= 0.4)
 
         self.btnDlt = Button(self.tableFrame, command=self.runRemediation, text="Run Remediation ", cursor="hand2",width=30)
