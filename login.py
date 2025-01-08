@@ -1,14 +1,10 @@
 import ttkbootstrap as tk
 from tkinter import messagebox
 import admin
-import instructor
-from database import Database
 import pyodbc
 import tkinter.font as TkFont
 import ttkbootstrap as ttk
 
-# creating a database object
-db = Database("mainDatabase.db")
 
 class ConnectionString:
     def __init__(self, servername, username, password, authmethod, driver):

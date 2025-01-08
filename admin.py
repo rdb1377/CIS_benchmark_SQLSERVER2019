@@ -2,10 +2,8 @@ import ttkbootstrap
 import tkinter as tkinter
 from  ttkbootstrap import *
 # from tkinter import ttk
-from database import Database
 from tkinter import messagebox
 import login
-import sessions
 from bench import Benchmarks
 import ttkbootstrap.scrolled as st
 from tkhtmlview import HTMLScrolledText

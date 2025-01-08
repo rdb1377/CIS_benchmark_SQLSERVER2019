@@ -8,7 +8,7 @@ class Benchmarks:
         self.cnxn = cnxn
         self.csvreader = []
         self.data_list = []
-        with open("book1.csv", 'r' ) as file:
+        with open("config.csv", 'r' ) as file:
             self.data_list = list(csv.reader(file , delimiter= ','))
 
         self.connectionstring = self.buildCNXN('')
@@ -47,7 +47,7 @@ class Benchmarks:
     def runAudit(self):
         rows = []
         cur = self.connectionstring.cursor()
-        with open("book1.csv", 'r' ) as file:
+        with open("config.csv", 'r' ) as file:
 
             self.csvreader = csv.reader(file , delimiter= ',')
             header = next(self.csvreader)
