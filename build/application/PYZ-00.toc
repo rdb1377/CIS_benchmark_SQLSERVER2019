@@ -476,10 +476,6 @@
   ('ctypes.wintypes',
    'C:\\Users\\311766821\\AppData\\Local\\Programs\\Python\\Python39\\lib\\ctypes\\wintypes.py',
    'PYMODULE'),
-  ('database',
-   'C:\\Users\\311766821\\PycharmProjects\\Python-tkinter-Project - '
-   'Copy\\database.py',
-   'PYMODULE'),
   ('dataclasses',
    'C:\\Users\\311766821\\AppData\\Local\\Programs\\Python\\Python39\\lib\\dataclasses.py',
    'PYMODULE'),
@@ -746,10 +742,6 @@
    'PYMODULE'),
   ('inspect',
    'C:\\Users\\311766821\\AppData\\Local\\Programs\\Python\\Python39\\lib\\inspect.py',
-   'PYMODULE'),
-  ('instructor',
-   'C:\\Users\\311766821\\PycharmProjects\\Python-tkinter-Project - '
-   'Copy\\instructor.py',
    'PYMODULE'),
   ('ipaddress',
    'C:\\Users\\311766821\\AppData\\Local\\Programs\\Python\\Python39\\lib\\ipaddress.py',
@@ -2366,10 +2358,6 @@
    'PYMODULE'),
   ('selectors',
    'C:\\Users\\311766821\\AppData\\Local\\Programs\\Python\\Python39\\lib\\selectors.py',
-   'PYMODULE'),
-  ('sessions',
-   'C:\\Users\\311766821\\PycharmProjects\\Python-tkinter-Project - '
-   'Copy\\sessions.py',
    'PYMODULE'),
   ('shlex',
    'C:\\Users\\311766821\\AppData\\Local\\Programs\\Python\\Python39\\lib\\shlex.py',
