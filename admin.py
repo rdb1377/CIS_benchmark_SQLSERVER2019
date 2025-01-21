@@ -35,19 +35,19 @@ class AdminControls:
 
     def adminControlsFrame(self):
         self.entriesFrame = Frame(self.root)
-        self.entriesFrame.place(x=0, y=480, width=1400, height=500)
+        self.entriesFrame.place(x=0, y=450, width=1400, height=500)
 
         self.dsc_label = Label(self.entriesFrame, text="Description", font=("Goudy old style", 20))
-        self.dsc_label.place(x=600, y=10)
+        self.dsc_label.place(x=550, y=0)
 
-        self.description = HTMLScrolledText(self.entriesFrame, html='<html></html>', height= 25, width=120)
-        self.description.place(x=600, y=50)
+        self.description = HTMLScrolledText(self.entriesFrame, html='<html></html>', height= 23, width=120)
+        self.description.place(x=550, y=30)
 
         self.remediation_label = Label(self.entriesFrame, text="Remediation Result", font=("Goudy old style", 20))
-        self.remediation_label.place(x=10, y=10)
+        self.remediation_label.place(x=10, y=0)
 
         self.remediation = st.ScrolledText(self.entriesFrame, font=("Courier", 9), width=70, height=9, relief=GROOVE, wrap= tkinter.WORD)
-        self.remediation.place(x=10, y=50)
+        self.remediation.place(x=10, y=30)
 
     def getData(self, event):
         try:
@@ -146,11 +146,11 @@ class AdminControls:
         # self.comboAvail.bind("<<ComboboxSelected>>", self.selectDays)
 
         # TreeView output layout configurations
-        self.out.place(relx = 0.3,rely=0.1,width=950 , height=400)
+        self.out.place(relx = 0.25,rely=0.1,width=950 , height=400)
         self.yScroll.config(command=self.out.yview)
 
         self.LabelDatabase = Label(self.tableFrame, text="List of Recommendations", font=("Goudy old style", 20))
-        self.LabelDatabase.place(relx=0.3, rely=0.01)
+        self.LabelDatabase.place(relx=0.25, rely=0.01)
 
         self.LabelDatabase = Label(self.tableFrame, text="database", font=("Goudy old style", 20))
         self.LabelDatabase.place(relx=0.01 , rely= 0.03)

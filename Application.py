@@ -10,7 +10,7 @@ class Application:
         root.title("CIS Hardening")
         photo = tk.PhotoImage(file="ico.png")
         root.iconphoto(False , photo)
-        root.geometry("1400x930+100+50")
+        root.geometry("1270x850+100+50")
         root.resizable(height=True,width=True)
 
         #Parsing the root window to the Login class
